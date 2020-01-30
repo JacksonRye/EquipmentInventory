@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="gson-2.8.6">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/java/gson-2.8.6.jar!/" />
+      <root url="jar://$USER_HOME$/java/commons-codec-1.9.jar!/" />
+      <root url="jar://$USER_HOME$/java/jfoenix-8.0.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
