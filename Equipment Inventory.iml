@@ -10,5 +10,7 @@
     <orderEntry type="library" name="gson-2.8.6" level="project" />
     <orderEntry type="library" name="jfoenix-8.0.8" level="project" />
     <orderEntry type="library" name="commons-codec-1.9" level="project" />
+    <orderEntry type="library" name="derby" level="project" />
+    <orderEntry type="library" name="derbyclient" level="project" />
   </component>
 </module>

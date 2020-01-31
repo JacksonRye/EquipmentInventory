@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Fri Jan 31 15:04:56 WAT 2020:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.14.2.0 - (1828579): instance a816c00e-016f-fbeb-401c-00000526d9d0 
+on database directory /home/jackson/eclipse-workspace/Equipment Inventory/database with class loader sun.misc.Launcher$AppClassLoader@18b4aac2 
+Loaded from file:/home/jackson/java/db-derby-10.14.2.0-bin/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_241-b07
+user.dir=/home/jackson/eclipse-workspace/Equipment Inventory
+os.name=Linux
+os.arch=amd64
+os.version=4.15.0-20-generic
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

@@ -1,5 +1,6 @@
 package equipment.inventory.ui.main;
 
+import equipment.inventory.database.DatabaseHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,6 +15,11 @@ public class Main extends Application {
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+
+        new Thread(() -> {
+            DatabaseHandler.getInstance();
+        }).start();
+
     }
 
 
