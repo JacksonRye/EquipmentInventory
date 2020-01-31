@@ -2,8 +2,6 @@ package equipment.inventory.database;
 
 import javax.swing.*;
 import java.sql.*;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 public final class DatabaseHandler {
 
@@ -95,7 +93,8 @@ public final class DatabaseHandler {
                         "equipmentName varchar(200),\n" +
                         "borrowedBy varchar(200), \n" +
                         "timeBorrowed timestamp default CURRENT_TIMESTAMP, \n" +
-                        "timeReturned timestamp default null, \n " +
+                        "timeReturned timestamp default null" +
+                        ", \n" +
                         "FOREIGN KEY (equipmentId) REFERENCES EQUIPMENT_STOCK(equipmentId), \n" +
                         "FOREIGN KEY (equipmentName) REFERENCES EQUIPMENT_STOCK(equipmentName), \n" +
                         "FOREIGN KEY (borrowedBy) REFERENCES STAFF_TABLE(staffId)" +
