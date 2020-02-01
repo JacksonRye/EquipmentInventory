@@ -3,7 +3,7 @@ package equipment.inventory.ui.addstaff;
 import com.jfoenix.controls.JFXTextField;
 import equipment.inventory.database.DataHelper;
 import equipment.inventory.database.DatabaseHandler;
-import equipment.inventory.ui.tables.liststaffs.Staff;
+import equipment.inventory.model.Staff;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

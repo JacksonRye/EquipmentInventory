@@ -1,8 +1,9 @@
 package equipment.inventory.database;
 
-import equipment.inventory.ui.tables.listequipment.BorrowedEquipment;
-import equipment.inventory.ui.tables.listequipment.Equipment;
-import equipment.inventory.ui.tables.liststaffs.Staff;
+import equipment.inventory.alert.AlertMaker;
+import equipment.inventory.model.BorrowedEquipment;
+import equipment.inventory.model.Equipment;
+import equipment.inventory.model.Staff;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -19,7 +20,7 @@ public class DataHelper {
             statement.setInt(3, equipment.getQuantity());
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            AlertMaker.showErrorMessage(ex);
         }
         return false;
     }
@@ -36,17 +37,11 @@ public class DataHelper {
             statement.setString(5, staff.getEmail());
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            AlertMaker.showErrorMessage(ex);
         }
         return false;
     }
 
-    //    "equipmentId varchar(200) primary key, \n" +
-//            "equipmentName varchar(200),\n" +
-//            "quantityBorrowed INTEGER, \n" +
-//            "borrowedBy varchar(200), \n" +
-//            "timeBorrowed timestamp default CURRENT_TIMESTAMP, \n" +
-//            "timeReturned timestamp default null" +
 
     public static boolean insertBorrowedEquipment(BorrowedEquipment equipment) {
         try {
@@ -74,12 +69,45 @@ public class DataHelper {
             return (preparedStatement.executeUpdate() > 0 && preparedStatement1.executeUpdate() > 0);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            AlertMaker.showErrorMessage(e);
         }
 
         return false;
 
     }
 
+
+    public static boolean updateEquipment(Equipment equipment) {
+        try {
+            PreparedStatement statement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                    "UPDATE EQUIPMENT_STOCK SET equipmentName = ?, " +
+                            "quantityRemaining = ? WHERE equipmentId = ?"
+            );
+
+            statement.setString(1, equipment.getName());
+            statement.setInt(2, equipment.getQuantity());
+            statement.setString(3, equipment.getId());
+
+            return statement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean deleteEquipment(Equipment equipment) {
+        try {
+            PreparedStatement preparedStatement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                    "DELETE FROM " + DatabaseHandler.EQUIPMENT_STOCK_TABLE +
+                            " WHERE equipmentId = ?"
+            );
+            preparedStatement.setString(1, equipment.getId());
+            return preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
 }

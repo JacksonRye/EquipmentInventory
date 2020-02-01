@@ -1,5 +1,7 @@
 package equipment.inventory.database;
 
+import equipment.inventory.alert.AlertMaker;
+
 import javax.swing.*;
 import java.sql.*;
 
@@ -11,6 +13,10 @@ public final class DatabaseHandler {
     private static Connection conn = null;
     private static Statement stmt = null;
 
+    public static final String STAFF_TABLE = "STAFF_TABLE";
+    public static final String EQUIPMENT_STOCK_TABLE = "EQUIPMENT_STOCK";
+    public static final String BORROWED_TABLE = "BORROWED_TABLE";
+
     {
         createConnection();
         setUpStaffTable();
@@ -19,20 +25,19 @@ public final class DatabaseHandler {
     }
 
     private void setUpStaffTable() {
-        String TABLE_NAME = "STAFF_TABLE";
         try {
             stmt = conn.createStatement();
             DatabaseMetaData dbm = conn.getMetaData();
 
-            ResultSet tables = dbm.getTables(null, null, TABLE_NAME.toUpperCase(),
+            ResultSet tables = dbm.getTables(null, null, STAFF_TABLE.toUpperCase(),
                     null);
 
             if (tables.next()) {
-                System.out.println("Table " + TABLE_NAME + " already exists, Ready to go!");
+                System.out.println("Table " + STAFF_TABLE + " already exists, Ready to go!");
             }
 
             else {
-                stmt.execute("CREATE TABLE " + TABLE_NAME + "(" +
+                stmt.execute("CREATE TABLE " + STAFF_TABLE + "(" +
                         "staffId varchar(200) primary key, \n" +
                         "staffFirstName varchar(200), \n" +
                         "staffSurname varchar(200), \n" +
@@ -42,27 +47,24 @@ public final class DatabaseHandler {
 
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            AlertMaker.showErrorMessage(e);
         } finally {
 
         }
     }
 
     private void setUpStockTable() {
-        String TABLE_NAME = "EQUIPMENT_STOCK";
         try {
             stmt = conn.createStatement();
             DatabaseMetaData dbm = conn.getMetaData();
 
-            ResultSet tables = dbm.getTables(null, null, TABLE_NAME.toUpperCase(),
+            ResultSet tables = dbm.getTables(null, null, EQUIPMENT_STOCK_TABLE.toUpperCase(),
                     null);
 
             if (tables.next()){
-                System.out.println("Table " + TABLE_NAME + " already exists, Ready to go!");
-            }
-
-            else {
-                stmt.execute("CREATE TABLE " + TABLE_NAME + "( " +
+                System.out.println("Table " + EQUIPMENT_STOCK_TABLE + " already exists, Ready to go!");
+            } else {
+                stmt.execute("CREATE TABLE " + EQUIPMENT_STOCK_TABLE + "( " +
                         "equipmentId varchar(200) primary key, \n" +
                         "equipmentName varchar(200), \n" +
                         "quantityRemaining INTEGER default 0" +
@@ -70,33 +72,36 @@ public final class DatabaseHandler {
 
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            AlertMaker.showErrorMessage(e)
+            ;
         } finally {
 
         }
     }
 
     void setUpBorrowedTable() {
-        String TABLE_NAME = "BORROWED_TABLE";
         try {
             stmt = conn.createStatement();
             DatabaseMetaData dbm = conn.getMetaData();
 
-            ResultSet tables = dbm.getTables(null, null, TABLE_NAME.toUpperCase(),
+            ResultSet tables = dbm.getTables(null, null, BORROWED_TABLE.toUpperCase(),
                     null);
 
             if (tables.next()) {
-                System.out.println("Table " + TABLE_NAME + " already exists, Ready to go!");
+                System.out.println("Table " + BORROWED_TABLE + " already exists, Ready to go!");
             }
 
             else {
-                stmt.execute("CREATE TABLE " + TABLE_NAME + "(" +
-                        "equipmentId varchar(200) primary key, \n" +
+                stmt.execute("CREATE TABLE " + BORROWED_TABLE + "(" +
+                        "id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), \n" +
+                        "equipmentId varchar(200), \n" +
                         "equipmentName varchar(200),\n" +
                         "quantityBorrowed INTEGER, \n" +
                         "borrowedBy varchar(200), \n" +
                         "timeBorrowed timestamp default CURRENT_TIMESTAMP, \n" +
-                        "timeReturned timestamp default null" +
+                        "timeReturned timestamp default null, \n" +
+                        "FOREIGN KEY (equipmentId) REFERENCES " + EQUIPMENT_STOCK_TABLE +
+                        "(equipmentId)" +
                         ")");
             }
 
@@ -120,7 +125,7 @@ public final class DatabaseHandler {
             stmt = conn.createStatement();
             result = stmt.executeQuery(query);
         } catch (SQLException ex) {
-            System.out.println("Exception at execQuery:databaseHandler " + ex.getLocalizedMessage());
+            ex.printStackTrace();
             return null;
         }
         finally {
@@ -135,9 +140,7 @@ public final class DatabaseHandler {
             stmt.execute(qu);
             return true;
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error: " +
-                    ex.getMessage(), "Error Occured", JOptionPane.ERROR_MESSAGE);
-            System.out.println("Exception at execQuery:dataHandler " + ex.getLocalizedMessage());
+            AlertMaker.showErrorMessage(ex);
             return false;
         }
         finally {

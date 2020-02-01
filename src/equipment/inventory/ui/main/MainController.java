@@ -1,9 +1,10 @@
 package equipment.inventory.ui.main;
 
 import com.jfoenix.controls.JFXTextField;
+import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.database.DatabaseHandler;
+import equipment.inventory.model.BorrowedEquipment;
 import equipment.inventory.ui.issue.IssueDialogController;
-import equipment.inventory.ui.tables.listequipment.BorrowedEquipment;
 import equipment.inventory.utils.EquipmentInventoryUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +22,9 @@ import java.sql.SQLException;
 public class MainController {
 
     DatabaseHandler handler = DatabaseHandler.getInstance();
+
+    private final static String EQUIPMENT_DOES_NOT_EXIST = "Equipment Does Not Exist";
+    private final static String STAFF_DOES_NOT_EXIST = "Staff Does Not Exist";
 
     @FXML
     private JFXTextField txtFieldStaffId;
@@ -78,10 +82,10 @@ public class MainController {
                 flag = false;
             }
             if (flag) {
-                txtStaffName.setText("No Such Staff Available");
+                txtStaffName.setText(STAFF_DOES_NOT_EXIST);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            AlertMaker.showErrorMessage(e);
         }
 
 
@@ -119,45 +123,57 @@ public class MainController {
                 flag = false;
             }
             if (flag) {
-                txtEquipmentName.setText("Equipment Does Not Exist");
+                txtEquipmentName.setText(EQUIPMENT_DOES_NOT_EXIST);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            AlertMaker.showErrorMessage(e);
         }
 
     }
 
-    void updateCache() {
+    Boolean checkCorrectFields() {
         fetchEquipment(new ActionEvent());
         fetchStaff(new ActionEvent());
+
+        if (txtEquipmentName.getText().equals(EQUIPMENT_DOES_NOT_EXIST) || txtEquipmentName.getText().isEmpty()
+                || txtStaffName.getText().equals(STAFF_DOES_NOT_EXIST) || txtStaffName.getText().isEmpty()) {
+            AlertMaker.showErrorMessage("Missing Fields", "Please Enter all Fields");
+            return false;
+        }
+
+        return true;
+
     }
+
 
     @FXML
     private void handleIssueOperation(ActionEvent event) {
 
-        updateCache();
+        if (checkCorrectFields()) {
 
-        String selectedEquipment = txtFieldEquipmentId.getText();
-        String selectedStaff = txtFieldStaffId.getText();
+            String selectedEquipment = txtFieldEquipmentId.getText();
+            String selectedStaff = txtFieldStaffId.getText();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipment/inventory/ui/issue/issue_dialog.fxml"));
-        Parent parent = null;
-        try {
-            parent = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipment/inventory/ui/issue/issue_dialog.fxml"));
+            Parent parent = null;
+            try {
+                parent = loader.load();
+            } catch (IOException e) {
+                AlertMaker.showErrorMessage(e);
+            }
+
+            BorrowedEquipment borrowedEquipment = new BorrowedEquipment(selectedEquipment, txtEquipmentName.getText(),
+                    0, selectedStaff, null, null);
+
+            IssueDialogController dialogController = loader.getController();
+            dialogController.inflateUI(borrowedEquipment);
+
+            Stage stage = new Stage(StageStyle.DECORATED);
+            stage.setTitle("Issue Equipments");
+            stage.setScene(new Scene(parent));
+            stage.show();
+            return;
         }
-
-        BorrowedEquipment borrowedEquipment = new BorrowedEquipment(selectedEquipment, txtEquipmentName.getText(),
-                0, selectedStaff, null, null);
-
-        IssueDialogController dialogController = loader.getController();
-        dialogController.inflateUI(borrowedEquipment);
-
-        Stage stage = new Stage(StageStyle.DECORATED);
-        stage.setTitle("Issue Equipments");
-        stage.setScene(new Scene(parent));
-        stage.show();
 
     }
 }

@@ -1,4 +1,4 @@
-package equipment.inventory.ui.tables.listequipment;
+package equipment.inventory.model;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;

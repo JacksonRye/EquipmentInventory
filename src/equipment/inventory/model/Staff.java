@@ -1,4 +1,4 @@
-package equipment.inventory.ui.tables.liststaffs;
+package equipment.inventory.model;
 
 
 import javafx.beans.property.SimpleStringProperty;

@@ -1,9 +1,10 @@
 package equipment.inventory.ui.addequipment;
 
 import com.jfoenix.controls.JFXTextField;
+import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.database.DataHelper;
 import equipment.inventory.database.DatabaseHandler;
-import equipment.inventory.ui.tables.listequipment.Equipment;
+import equipment.inventory.model.Equipment;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -29,17 +30,50 @@ public class AddEquipmentController implements Initializable {
 
     @FXML
     private void handleSaveOperation(ActionEvent event) {
-        Equipment equipment = new Equipment(inputId.getText(), inputName.getText(),
-                (int) spinnerQuantity.getValue());
+
+        String mId = inputId.getText();
+        String mName = inputName.getText();
+        Integer mQuantity = (Integer) spinnerQuantity.getValue();
+
+        Boolean flag = mName.isEmpty() || mId.isEmpty();
+
+        if (flag) {
+            AlertMaker.showErrorMessage("Empty Field", "Please Fill All Fields");
+            return;
+        }
+
+        if (isInEditMode) {
+            handleUpdateEquipment();
+            return;
+        }
+
+        Equipment equipment = new Equipment(mId, mName,
+                mQuantity);
 
         boolean result = DataHelper.insertNewEquipment(equipment);
 
         if (result) {
-            System.out.println("Equipment Added Successfully");
+            AlertMaker.showSimpleAlert("Success", "Equipment Added Successfully");
+            clearCache();
         } else {
-            System.out.println("Equipment Addition Failed");
+            AlertMaker.showErrorMessage("Error", "Equipment Addition Failed");
         }
 
+    }
+
+    private void handleUpdateEquipment() {
+        Equipment equipment = new Equipment(inputId.getText(), inputName.getText(), (Integer) spinnerQuantity.getValue());
+        if (DataHelper.updateEquipment(equipment)) {
+            AlertMaker.showSimpleAlert("Success", "Edit SuccessFul");
+            ((Stage) inputId.getScene().getWindow()).close();
+        } else {
+            AlertMaker.showErrorMessage("Error", "Edit Unsuccessful");
+        }
+    }
+
+    void clearCache() {
+        inputId.setText("");
+        inputName.setText("");
     }
 
     @FXML
@@ -56,4 +90,10 @@ public class AddEquipmentController implements Initializable {
         spinnerQuantity.setValueFactory(quantityValuesFactory);
     }
 
+    public void inflateUI(Equipment selectedEquipment) {
+        isInEditMode = true;
+        inputId.setText(selectedEquipment.getId());
+        inputId.setEditable(false);
+        inputName.setText(selectedEquipment.getName());
+    }
 }

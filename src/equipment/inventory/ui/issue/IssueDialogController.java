@@ -1,7 +1,7 @@
 package equipment.inventory.ui.issue;
 
 import equipment.inventory.database.DataHelper;
-import equipment.inventory.ui.tables.listequipment.BorrowedEquipment;
+import equipment.inventory.model.BorrowedEquipment;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

@@ -1,20 +1,33 @@
 package equipment.inventory.ui.tables;
 
+import equipment.inventory.alert.AlertMaker;
+import equipment.inventory.database.DataHelper;
 import equipment.inventory.database.DatabaseHandler;
-import equipment.inventory.ui.tables.listequipment.BorrowedEquipment;
-import equipment.inventory.ui.tables.listequipment.Equipment;
-import equipment.inventory.ui.tables.liststaffs.Staff;
+import equipment.inventory.model.BorrowedEquipment;
+import equipment.inventory.model.Equipment;
+import equipment.inventory.model.Staff;
+import equipment.inventory.ui.addequipment.AddEquipmentController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ViewDatabaseController implements Initializable {
@@ -171,5 +184,80 @@ public class ViewDatabaseController implements Initializable {
 
         stockTableView.setItems(equipmentList);
 
+    }
+
+
+    @FXML
+    private void handleStockEditMenuOperation(ActionEvent event) {
+        Equipment selectedEquipment = stockTableView.getSelectionModel().getSelectedItem();
+        if (selectedEquipment == null) {
+            AlertMaker.showErrorMessage("No Equipment Selected", "Please select an Equipment");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipment/inventory/ui/addequipment/add_equipment.fxml"));
+            Parent parent = loader.load();
+
+            AddEquipmentController controller = loader.getController();
+            controller.inflateUI(selectedEquipment);
+
+            Stage stage = new Stage(StageStyle.DECORATED);
+            stage.setTitle("Edit Equipment");
+            stage.setScene(new Scene(parent));
+            stage.show();
+
+            stage.setOnHiding((e) -> {
+                handleRefresh(new ActionEvent());
+            });
+
+        } catch (IOException ex) {
+            AlertMaker.showErrorMessage(ex);
+        }
+    }
+
+    private void handleRefresh(ActionEvent event) {
+        loadInAndOut();
+        loadStaffData();
+        loadStockData();
+    }
+
+    @FXML
+    private void handleStockDeleteMenuOperation(ActionEvent event) {
+        Equipment selectedEquipment = stockTableView.getSelectionModel().getSelectedItem();
+        if (selectedEquipment == null) {
+            AlertMaker.showErrorMessage("Error", "No Equipment Selected");
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete " + selectedEquipment.getName() + "?");
+
+        Optional<ButtonType> answer = alert.showAndWait();
+
+        if (answer.get() == ButtonType.OK) {
+            if (DataHelper.deleteEquipment(selectedEquipment)) {
+                AlertMaker.showSimpleAlert("Success", selectedEquipment.getName() + " deleted");
+                handleRefresh(new ActionEvent());
+                return;
+            }
+            AlertMaker.showErrorMessage("Error", "Item currently assigned to a staff. Cannot Delete");
+        }
+
+        return;
+
+
+    }
+
+//    TODO: Handle the following operations
+
+    @FXML
+    private void handleStaffEditMenuOperation(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleStaffDeleteMenuOperation(ActionEvent event) {
     }
 }
