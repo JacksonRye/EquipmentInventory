@@ -52,7 +52,7 @@ public class AddEquipmentController implements Initializable {
         databaseHandler = DatabaseHandler.getInstance();
 
         SpinnerValueFactory<Integer> quantityValuesFactory =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 100, 1);
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20000, 1);
         spinnerQuantity.setValueFactory(quantityValuesFactory);
     }
 

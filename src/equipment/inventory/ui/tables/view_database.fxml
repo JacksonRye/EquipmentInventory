@@ -59,6 +59,8 @@
                                    <columns>
                                        <TableColumn fx:id="inEquipmentId" prefWidth="75.0" text="EQUIPMENT ID"/>
                                        <TableColumn fx:id="inEquipmentName" prefWidth="75.0" text="EQUIPMENT NAME"/>
+                                       <TableColumn fx:id="inEquipmentQuantityBorrowed" prefWidth="75.0"
+                                                    text="QUANTITY BORROWED"/>
                                        <TableColumn fx:id="inBorrowedBy" prefWidth="75.0" text="BORROWED BY"/>
                                        <TableColumn fx:id="inTimeBorrowed" prefWidth="75.0" text="TIME BORROWED"/>
                                        <TableColumn fx:id="inTimeReturned" prefWidth="75.0" text="TIME RETURNED"/>

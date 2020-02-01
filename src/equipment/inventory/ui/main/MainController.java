@@ -2,11 +2,19 @@ package equipment.inventory.ui.main;
 
 import com.jfoenix.controls.JFXTextField;
 import equipment.inventory.database.DatabaseHandler;
+import equipment.inventory.ui.issue.IssueDialogController;
+import equipment.inventory.ui.tables.listequipment.BorrowedEquipment;
 import equipment.inventory.utils.EquipmentInventoryUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -108,8 +116,6 @@ public class MainController {
                 txtQuantityRemaining.setText(quantityRemaining);
                 txtEquipmentName.setText(equipmentName);
 
-                System.out.println(equipmentName);
-
                 flag = false;
             }
             if (flag) {
@@ -121,7 +127,37 @@ public class MainController {
 
     }
 
+    void updateCache() {
+        fetchEquipment(new ActionEvent());
+        fetchStaff(new ActionEvent());
+    }
+
     @FXML
     private void handleIssueOperation(ActionEvent event) {
+
+        updateCache();
+
+        String selectedEquipment = txtFieldEquipmentId.getText();
+        String selectedStaff = txtFieldStaffId.getText();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipment/inventory/ui/issue/issue_dialog.fxml"));
+        Parent parent = null;
+        try {
+            parent = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        BorrowedEquipment borrowedEquipment = new BorrowedEquipment(selectedEquipment, txtEquipmentName.getText(),
+                0, selectedStaff, null, null);
+
+        IssueDialogController dialogController = loader.getController();
+        dialogController.inflateUI(borrowedEquipment);
+
+        Stage stage = new Stage(StageStyle.DECORATED);
+        stage.setTitle("Issue Equipments");
+        stage.setScene(new Scene(parent));
+        stage.show();
+
     }
 }

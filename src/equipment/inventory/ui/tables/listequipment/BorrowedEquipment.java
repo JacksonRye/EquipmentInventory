@@ -2,31 +2,25 @@ package equipment.inventory.ui.tables.listequipment;
 
 import javafx.beans.property.SimpleStringProperty;
 
-public class BorrowedEquipment {
+public class BorrowedEquipment extends Equipment {
 
-    private final SimpleStringProperty equipmentId;
-    private final SimpleStringProperty equipmentName;
     private final SimpleStringProperty borrowedBy;
     private final SimpleStringProperty timeBorrowed;
     private final SimpleStringProperty timeReturned;
 
     public BorrowedEquipment(String equipmentId, String equipmentName,
+                             Integer quantity,
                              String borrowedBy, String timeBorrowed,
                              String timeReturned) {
-        super();
-        this.equipmentId = new SimpleStringProperty(equipmentId);
-        this.equipmentName = new SimpleStringProperty(equipmentName);
+
+        super(equipmentId, equipmentName, quantity);
         this.borrowedBy = new SimpleStringProperty(borrowedBy);
         this.timeBorrowed = new SimpleStringProperty(timeBorrowed);
         this.timeReturned = new SimpleStringProperty(timeReturned);
     }
 
-    public String getEquipmentId() {
-        return equipmentId.get();
-    }
-
-    public String getEquipmentName() {
-        return equipmentName.get();
+    public void setQuantity(Integer quantity) {
+        super.setQuantity(quantity);
     }
 
     public String getBorrowedBy() {
@@ -40,5 +34,17 @@ public class BorrowedEquipment {
     public String getTimeReturned() {
         return timeReturned.get();
     }
+
+
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
+    @Override
+    public String getName() {
+        return super.getName();
+    }
+
 
 }

@@ -39,6 +39,7 @@ public final class DatabaseHandler {
                         "phoneNumber varchar(20), \n" +
                         "email varchar(30)" +
                         ")");
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,6 +67,7 @@ public final class DatabaseHandler {
                         "equipmentName varchar(200), \n" +
                         "quantityRemaining INTEGER default 0" +
                         ")");
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -91,13 +93,10 @@ public final class DatabaseHandler {
                 stmt.execute("CREATE TABLE " + TABLE_NAME + "(" +
                         "equipmentId varchar(200) primary key, \n" +
                         "equipmentName varchar(200),\n" +
+                        "quantityBorrowed INTEGER, \n" +
                         "borrowedBy varchar(200), \n" +
                         "timeBorrowed timestamp default CURRENT_TIMESTAMP, \n" +
                         "timeReturned timestamp default null" +
-                        ", \n" +
-                        "FOREIGN KEY (equipmentId) REFERENCES EQUIPMENT_STOCK(equipmentId), \n" +
-                        "FOREIGN KEY (equipmentName) REFERENCES EQUIPMENT_STOCK(equipmentName), \n" +
-                        "FOREIGN KEY (borrowedBy) REFERENCES STAFF_TABLE(staffId)" +
                         ")");
             }
 
