@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="502.0" prefWidth="759.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="equipment.inventory.ui.tables.ViewDatabaseController">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Log Out" />
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Add" />
+                        <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+         <center>
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+              <tabs>
+                <Tab text="Stock">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TableView fx:id="stockTableView" layoutX="96.0" layoutY="91.0" prefHeight="440.0" prefWidth="759.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <columns>
+                                  <TableColumn fx:id="stockTabEquipmentID" prefWidth="75.0" text="EQUIPMENT ID" />
+                                  <TableColumn fx:id="stockTabEquipmentName" prefWidth="75.0" text="EQUIPMENT NAME" />
+                                    <TableColumn fx:id="stockTabEquipmentQuantity" prefWidth="75.0" text="QUANTITY" />
+                                </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab text="In &amp; Out">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                               <TableView fx:id="inTableView" layoutX="255.0" layoutY="85.0" prefHeight="440.0" prefWidth="759.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                   <columns>
+                                       <TableColumn fx:id="inEquipmentId" prefWidth="75.0" text="EQUIPMENT ID" />
+                                       <TableColumn fx:id="inEquipmentName" prefWidth="75.0" text="EQUIPMENT NAME" />
+                                    <TableColumn fx:id="inEquipmentQuantityBorrowed" prefWidth="75.0" text="QUANTITY BORROWED" />
+                                       <TableColumn fx:id="inBorrowedBy" prefWidth="75.0" text="BORROWED BY" />
+                                       <TableColumn fx:id="inTimeBorrowed" prefWidth="75.0" text="TIME BORROWED" />
+                                       <TableColumn fx:id="inTimeReturned" prefWidth="75.0" text="TIME RETURNED" />
+                                   </columns>
+                                   <columnResizePolicy>
+                                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                   </columnResizePolicy>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                  <Tab text="Staffs">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                               <TableView fx:id="staffTableView" layoutX="208.0" layoutY="120.0" prefHeight="440.0" prefWidth="759.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                   <columns>
+                                       <TableColumn fx:id="staffIdCol" prefWidth="75.0" text="STAFF ID" />
+                                       <TableColumn fx:id="staffFirstNameCol" prefWidth="75.0" text="FIRST NAME" />
+                                       <TableColumn fx:id="staffSurNameCol" prefWidth="75.0" text="SURNAME" />
+                                       <TableColumn fx:id="staffPhoneNumberCol" prefWidth="75.0" text="PHONE NUMBER" />
+                                       <TableColumn fx:id="staffEmailCol" prefWidth="75.0" text="EMAIL" />
+                                   </columns>
+                                   <columnResizePolicy>
+                                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                   </columnResizePolicy>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
+              </tabs>
+            </TabPane>
+         </center>
+      </BorderPane>
+   </children>
+</StackPane>
