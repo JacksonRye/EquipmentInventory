@@ -101,7 +101,8 @@ public final class DatabaseHandler {
                         "timeBorrowed timestamp default CURRENT_TIMESTAMP, \n" +
                         "timeReturned timestamp default null, \n" +
                         "FOREIGN KEY (equipmentId) REFERENCES " + EQUIPMENT_STOCK_TABLE +
-                        "(equipmentId)" +
+                        "(equipmentId)," +
+                        "FOREIGN KEY (borrowedBy) REFERENCES " + STAFF_TABLE + "(staffId)" +
                         ")");
             }
 

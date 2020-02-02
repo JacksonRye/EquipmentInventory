@@ -110,4 +110,36 @@ public class DataHelper {
         return false;
     }
 
+    public static boolean deleteStaff(Staff staff) {
+        try {
+            PreparedStatement statement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                    "DELETE FROM " + DatabaseHandler.STAFF_TABLE + " WHERE staffId = ?"
+            );
+            statement.setString(1, staff.getId());
+            return statement.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean updateStaff(Staff staff) {
+        try {
+            PreparedStatement statement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                    "UPDATE " + DatabaseHandler.STAFF_TABLE + " SET staffFirstName = ?, " +
+                            "staffSurname = ?, phoneNumber = ?, email = ? " +
+                            "WHERE staffId = ?"
+            );
+            statement.setString(1, staff.getFirstName());
+            statement.setString(2, staff.getSurName());
+            statement.setString(3, staff.getPhoneNumber());
+            statement.setString(4, staff.getEmail());
+            statement.setString(5, staff.getId());
+
+            return statement.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
 }

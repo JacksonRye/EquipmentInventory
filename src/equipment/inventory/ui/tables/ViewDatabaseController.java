@@ -7,6 +7,7 @@ import equipment.inventory.model.BorrowedEquipment;
 import equipment.inventory.model.Equipment;
 import equipment.inventory.model.Staff;
 import equipment.inventory.ui.addequipment.AddEquipmentController;
+import equipment.inventory.ui.addstaff.AddStaffController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -255,9 +256,58 @@ public class ViewDatabaseController implements Initializable {
 
     @FXML
     private void handleStaffEditMenuOperation(ActionEvent event) {
+        Staff selectedStaff = staffTableView.getSelectionModel().getSelectedItem();
+        if (selectedStaff == null) {
+            AlertMaker.showErrorMessage("Invalid Selection", "Please Select a Staff");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipment/inventory/ui/addstaff/add_staff.fxml"));
+            Parent parent = loader.load();
+
+            AddStaffController controller = loader.getController();
+            controller.inflateUI(selectedStaff);
+
+            Stage stage = new Stage(StageStyle.DECORATED);
+            stage.setTitle("Edit Staff");
+            stage.setScene(new Scene(parent));
+            stage.show();
+
+            stage.setOnHiding((e) -> {
+                handleRefresh(new ActionEvent());
+            });
+        } catch (IOException e) {
+            AlertMaker.showErrorMessage(e, "Error", "Staff Not Updated");
+        }
+
+
     }
 
     @FXML
     private void handleStaffDeleteMenuOperation(ActionEvent event) {
+        Staff selectedStaff = staffTableView.getSelectionModel().getSelectedItem();
+        if (selectedStaff == null) {
+            AlertMaker.showErrorMessage("Error", "No staff selected");
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText(null);
+        alert.setContentText("Are you sure you want to delete " + selectedStaff.getId() + "?");
+
+        Optional<ButtonType> answer = alert.showAndWait();
+
+        if (answer.get() == ButtonType.OK) {
+            if (DataHelper.deleteStaff(selectedStaff)) {
+                AlertMaker.showSimpleAlert("Success", selectedStaff.getId() + " deleted");
+                handleRefresh(new ActionEvent());
+                return;
+            }
+            AlertMaker.showErrorMessage("Error", "Staff currently holds one or more equipments");
+        }
+
+        return;
     }
 }

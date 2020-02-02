@@ -1,7 +1,9 @@
 package equipment.inventory.ui.issue;
 
+import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.database.DataHelper;
 import equipment.inventory.model.BorrowedEquipment;
+import equipment.inventory.ui.main.MainController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -21,19 +23,25 @@ public class IssueDialogController implements Initializable {
 
     private BorrowedEquipment equipment;
 
+    private MainController controller;
+
 
     @FXML
     private void handleIssueOperation(ActionEvent event) {
         equipment.setQuantity((Integer) spinnerQuantity.getValue());
         if (DataHelper.insertBorrowedEquipment(equipment)) {
-            System.out.println("Borrowed Equipment Inserted Successfully");
+            AlertMaker.showSimpleAlert("Success", "Items Issued Successfully");
+            ((Stage) spinnerQuantity.getScene().getWindow()).close();
+            controller.clearEntries();
         } else {
             System.out.println("Borrowed Equipment Failed");
         }
 
     }
 
-    public void inflateUI(BorrowedEquipment borrowedEquipment) {
+
+    public void inflateUI(BorrowedEquipment borrowedEquipment, MainController mainController) {
+        controller = mainController;
         equipment = borrowedEquipment;
         txtIssueConfirmation.setText("You are about to Issue " +
                 equipment.getId() + " to " + equipment.getBorrowedBy());
