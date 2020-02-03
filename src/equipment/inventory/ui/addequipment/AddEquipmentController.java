@@ -5,8 +5,10 @@ import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.database.DataHelper;
 import equipment.inventory.database.DatabaseHandler;
 import equipment.inventory.model.Equipment;
+import equipment.inventory.ui.main.MainController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -53,6 +55,15 @@ public class AddEquipmentController implements Initializable {
         boolean result = DataHelper.insertNewEquipment(equipment);
 
         if (result) {
+            try {
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipment/inventory/ui/main/Main.fxml"));
+                loader.load();
+                MainController controller = loader.getController();
+                controller.loadComboBox();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             AlertMaker.showSimpleAlert("Success", "Equipment Added Successfully");
             clearCache();
         } else {

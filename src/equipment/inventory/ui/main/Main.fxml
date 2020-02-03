@@ -36,75 +36,49 @@
                       <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                               <children>
-                                  <HBox layoutY="55.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0"
-                                        AnchorPane.rightAnchor="0.0">
+                                  <VBox layoutY="31.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <children>
-                                          <JFXTextField fx:id="txtFieldEquipmentId" labelFloat="true"
-                                                        onAction="#fetchEquipment" promptText="Equipment ID">
-                                              <HBox.margin>
-                                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                                              </HBox.margin>
-                                          </JFXTextField>
-                                          <VBox>
+                                          <HBox>
                                               <children>
-                                                  <Text fx:id="txtEquipmentName" strokeType="OUTSIDE" strokeWidth="0.0"
-                                                        text="Equipment Name" wrappingWidth="453.7294921875">
-                                                      <VBox.margin>
-                                                          <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
-                                                      </VBox.margin>
-                                                  </Text>
-                                                  <Text fx:id="txtQuantityRemaining" layoutX="10.0" layoutY="23.0"
-                                                        strokeType="OUTSIDE" strokeWidth="0.0" text="Borrowed By"
-                                                        wrappingWidth="453.7294921875">
-                                                      <VBox.margin>
-                                                          <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
-                                                      </VBox.margin>
-                                                  </Text>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </HBox.margin>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                              <HBox layoutY="204.0" prefHeight="100.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                 <children>
-                                     <JFXTextField fx:id="txtFieldStaffId" labelFloat="true" onAction="#fetchStaff"
-                                                   prefHeight="26.0" prefWidth="160.0" promptText="Staff ID">
-                                         <HBox.margin>
-                                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-                                         </HBox.margin>
-                                     </JFXTextField>
-                                    <VBox>
-                                       <children>
-                                           <Text fx:id="txtStaffName" strokeType="OUTSIDE" strokeWidth="0.0"
-                                                 text="Staff Name" wrappingWidth="453.7294921875">
-                                               <VBox.margin>
-                                                   <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
-                                               </VBox.margin>
-                                           </Text>
-                                           <Text fx:id="txtPhoneNumber" layoutX="10.0" layoutY="23.0"
-                                                 strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number"
-                                                 wrappingWidth="453.7294921875">
-                                               <VBox.margin>
-                                                   <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
-                                               </VBox.margin>
-                                           </Text>
-                                           <Text fx:id="txtEmail" layoutX="10.0" layoutY="39.0" strokeType="OUTSIDE"
-                                                 strokeWidth="0.0" text="Email" wrappingWidth="453.7294921875">
-                                               <VBox.margin>
-                                                   <Insets bottom="5.0" left="10.0" right="10.0" top="10.0"/>
-                                               </VBox.margin>
-                                           </Text>
-                                       </children>
-                                    </VBox>
-                                 </children>
-                              </HBox>
-                                  <JFXButton layoutX="296.0" layoutY="365.0" onAction="#handleIssueOperation"
-                                             prefHeight="66.0" prefWidth="669.0" text="ISSUE"
-                                             AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"
-                                             AnchorPane.rightAnchor="10.0"/>
-                           </children>
+                                                  <JFXComboBox fx:id="comboBoxEquipments" editable="true"
+                                                               labelFloat="true" prefHeight="26.0" prefWidth="407.0"
+                                                               promptText="Select Equipment">
+                                                      <HBox.margin>
+                                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                                      </HBox.margin>
+                                                  </JFXComboBox>
+                                                  <JFXButton onAction="#addToCart" prefHeight="26.0" prefWidth="134.0"
+                                                             text="Add To Cart">
+                                                      <HBox.margin>
+                                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                                      </HBox.margin>
+                                                  </JFXButton>
+                                              </children>
+                                              <VBox.margin>
+                                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                              </VBox.margin>
+                                          </HBox>
+                                          <ScrollPane fitToWidth="true" prefHeight="311.0" prefWidth="669.0">
+                                              <content>
+                                                  <VBox fx:id="vboxCart" prefHeight="281.0" prefWidth="667.0"/>
+                                              </content>
+                                          </ScrollPane>
+                                          <HBox>
+                                              <VBox.margin>
+                                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                              </VBox.margin>
+                                              <children>
+                                                  <JFXButton onAction="#handleIssueOperation" prefHeight="58.0"
+                                                             prefWidth="669.0" text="ISSUE"/>
+                                                  <JFXButton layoutX="10.0" layoutY="10.0" onAction="#clearCart"
+                                                             prefHeight="58.0" prefWidth="669.0"
+                                                             text="Clear Selection"/>
+                                              </children>
+                                          </HBox>
+                                      </children>
+                                  </VBox>
+                              </children>
                         </AnchorPane>
                   </content>
                 </Tab>
@@ -274,6 +248,8 @@
                      </VBox.margin>
                   </JFXButton>
                   <JFXButton layoutX="10.0" layoutY="120.0" onAction="#handleViewDatabaseOperation" prefHeight="100.0" prefWidth="200.0" text="View Database" />
+                   <JFXButton layoutX="10.0" layoutY="230.0" onAction="#handleSettingsOperation" prefHeight="100.0"
+                              prefWidth="200.0" text="Settings"/>
                </children>
             </VBox>
          </right>

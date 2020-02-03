@@ -32,7 +32,6 @@ public class IssueDialogController implements Initializable {
         if (DataHelper.insertBorrowedEquipment(equipment)) {
             AlertMaker.showSimpleAlert("Success", "Items Issued Successfully");
             ((Stage) spinnerQuantity.getScene().getWindow()).close();
-            controller.clearEntries();
         } else {
             System.out.println("Borrowed Equipment Failed");
         }

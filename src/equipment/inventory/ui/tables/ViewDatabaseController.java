@@ -252,8 +252,6 @@ public class ViewDatabaseController implements Initializable {
 
     }
 
-//    TODO: Handle the following operations
-
     @FXML
     private void handleStaffEditMenuOperation(ActionEvent event) {
         Staff selectedStaff = staffTableView.getSelectionModel().getSelectedItem();

@@ -32,4 +32,8 @@ public class Equipment {
         this.quantity.set(quantity);
     }
 
+    @Override
+    public String toString() {
+        return name.get();
+    }
 }

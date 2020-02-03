@@ -1,31 +1,31 @@
 package equipment.inventory.ui.main;
 
+import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.database.DatabaseHandler;
-import equipment.inventory.model.BorrowedEquipment;
-import equipment.inventory.ui.issue.IssueDialogController;
+import equipment.inventory.model.Equipment;
+import equipment.inventory.ui.main.item.ItemController;
 import equipment.inventory.utils.EquipmentInventoryUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.fxml.Initializable;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-import java.io.IOException;
+import java.net.URL;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 import static equipment.inventory.database.DatabaseHandler.getInstance;
 
-public class MainController {
+public class MainController implements Initializable {
 
     DatabaseHandler handler = getInstance();
 
@@ -63,6 +63,12 @@ public class MainController {
     @FXML
     private Text txtReturnDateIssued;
     private boolean isReadyForReturn = false;
+    @FXML
+    private VBox vboxCart;
+    @FXML
+    private JFXComboBox comboBoxEquipments;
+    private ObservableList<Equipment> databaseEquipmentList = FXCollections.observableArrayList();
+
 
     @FXML
     private void handleAddStaffOperation(ActionEvent event) {
@@ -82,135 +88,21 @@ public class MainController {
                 "View Database", null);
     }
 
-    @FXML
-    private void fetchStaff(ActionEvent event) {
-        clearStaffCache();
-        String staffId = txtFieldStaffId.getText();
-        String query = "SELECT * FROM STAFF_TABLE WHERE staffId = '" + staffId + "'";
-        ResultSet resultSet = handler.execQuery(query);
-
-        Boolean flag = true;
-
-        try {
-            while (resultSet.next()) {
-                String staffName = resultSet.getString("staffFirstName") +
-                        " " + resultSet.getString("staffSurName");
-                String phoneNumber = resultSet.getString("phoneNumber");
-                String email = resultSet.getString("email");
-
-                txtStaffName.setText(staffName);
-                txtPhoneNumber.setText(phoneNumber);
-                txtEmail.setText(email);
-
-                flag = false;
-            }
-            if (flag) {
-                txtStaffName.setText(STAFF_DOES_NOT_EXIST);
-            }
-        } catch (SQLException e) {
-            AlertMaker.showErrorMessage(e);
-        }
-
-
-    }
-
-    public void clearStaffCache() {
-        txtStaffName.setText("");
-        txtPhoneNumber.setText("");
-        txtEmail.setText("");
-    }
-
-    public void clearEquipmentCache() {
-        txtQuantityRemaining.setText("");
-        txtEquipmentName.setText("");
-    }
-
-    @FXML
-    private void fetchEquipment(ActionEvent event) {
-        clearEquipmentCache();
-        String equipmentId = txtFieldEquipmentId.getText();
-        String query = "SELECT * FROM EQUIPMENT_STOCK WHERE equipmentId = '" + equipmentId + "'";
-        ResultSet resultSet = handler.execQuery(query);
-
-        Boolean flag = true;
-
-        try {
-            while (resultSet.next()) {
-
-                String equipmentName = resultSet.getString("equipmentName");
-                String quantityRemaining = resultSet.getString("quantityRemaining");
-
-                txtQuantityRemaining.setText(quantityRemaining);
-                txtEquipmentName.setText(equipmentName);
-
-                flag = false;
-            }
-            if (flag) {
-                txtEquipmentName.setText(EQUIPMENT_DOES_NOT_EXIST);
-            }
-        } catch (SQLException e) {
-            AlertMaker.showErrorMessage(e);
-        }
-
-    }
-
-    Boolean checkCorrectFields() {
-        fetchEquipment(new ActionEvent());
-        fetchStaff(new ActionEvent());
-
-        if (txtEquipmentName.getText().equals(EQUIPMENT_DOES_NOT_EXIST) || txtEquipmentName.getText().isEmpty()
-                || txtStaffName.getText().equals(STAFF_DOES_NOT_EXIST) || txtStaffName.getText().isEmpty()) {
-            AlertMaker.showErrorMessage("Missing Fields", "Please Enter all Fields");
-            return false;
-        }
-
-        return true;
-
-    }
-
 
     @FXML
     private void handleIssueOperation(ActionEvent event) {
+//    TODO: HANDLE ISSUE OPERATION
 
-        //  TODO: THIS IS WHERE YOU FIND INTERCONTROLLER INTERACTION
-
-        if (checkCorrectFields()) {
-
-            String selectedEquipment = txtFieldEquipmentId.getText();
-            String selectedStaff = txtFieldStaffId.getText();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipment/inventory/ui/issue/issue_dialog.fxml"));
-            Parent parent = null;
-            try {
-                parent = loader.load();
-            } catch (IOException e) {
-                AlertMaker.showErrorMessage(e);
-            }
-
-            BorrowedEquipment borrowedEquipment = new BorrowedEquipment(selectedEquipment, txtEquipmentName.getText(),
-                    0, selectedStaff, null, null);
-
-            IssueDialogController dialogController = loader.getController();
-
-            dialogController.inflateUI(borrowedEquipment, this);
-
-            Stage stage = new Stage(StageStyle.DECORATED);
-            stage.setTitle("Issue Equipments");
-            stage.setScene(new Scene(parent));
-            stage.show();
-            return;
         }
 
-    }
 
     @FXML
     private void loadEquipmentInfo(ActionEvent event) {
-        clearEntries();
         ObservableList<String> borrowedData = FXCollections.observableArrayList();
         isReadyForReturn = false;
 
         try {
-            String equipmentId = txtFieldReturnEquipmentId.getText();
+            String issueId = txtFieldReturnEquipmentId.getText();
             String query = "SELECT BORROWED_TABLE.equipmentId, BORROWED_TABLE.equipmentName, BORROWED_TABLE.quantityBorrowed," +
                     "BORROWED_TABLE.borrowedBy, BORROWED_TABLE.timeBorrowed,\n" +
                     "STAFF_TABLE.staffId, STAFF_TABLE.staffFirstName, STAFF_TABLE.staffSurname, STAFF_TABLE.phoneNumber, STAFF_TABLE.email\n" +
@@ -219,7 +111,7 @@ public class MainController {
                     "ON BORROWED_TABLE.borrowedBy = STAFF_TABLE.staffId\n" +
                     "LEFT JOIN EQUIPMENT_STOCK\n" +
                     "ON BORROWED_TABLE.equipmentId = EQUIPMENT_STOCK.equipmentId\n" +
-                    "WHERE BORROWED_TABLE.equipmentId = '" + equipmentId + "'";
+                    "WHERE BORROWED_TABLE.issueId = " + issueId + "";
 
             ResultSet resultSet = handler.execQuery(query);
             if (resultSet.next()) {
@@ -246,10 +138,6 @@ public class MainController {
         }
     }
 
-    public void clearEntries() {
-        clearStaffCache();
-        clearEquipmentCache();
-    }
 
     @FXML
     private void handleEquipmentReturnOperation(ActionEvent event) {
@@ -257,5 +145,48 @@ public class MainController {
 
     @FXML
     private void handleReturnCancelOperation(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleSettingsOperation(ActionEvent event) {
+    }
+
+    @FXML
+    private void clearCart(ActionEvent event) {
+    }
+
+    @FXML
+    private void addToCart(ActionEvent event) {
+        String selectedItem = String.valueOf(comboBoxEquipments.getSelectionModel().getSelectedItem());
+        vboxCart.getChildren().add(new ItemController(new Equipment("1", selectedItem, 3)));
+
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        loadComboBox();
+    }
+
+    //  TODO: CREATE AUTO-COMPLETE COMBO BOX
+    public void loadComboBox() {
+        databaseEquipmentList.clear();
+        try {
+
+            PreparedStatement preparedStatement = DatabaseHandler.getInstance()
+                    .getConn().prepareStatement("SELECT * FROM EQUIPMENT_STOCK");
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                String equipmentName = resultSet.getString("equipmentName");
+                String equipmentId = resultSet.getString("equipmentId");
+                Integer remainingQuantity = resultSet.getInt("quantityRemaining");
+                databaseEquipmentList.add(new Equipment(equipmentId, equipmentName, remainingQuantity));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        comboBoxEquipments.setItems(databaseEquipmentList);
     }
 }

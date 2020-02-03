@@ -6,6 +6,7 @@ import equipment.inventory.model.Equipment;
 import equipment.inventory.model.Staff;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DataHelper {
@@ -45,6 +46,19 @@ public class DataHelper {
 
     public static boolean insertBorrowedEquipment(BorrowedEquipment equipment) {
         try {
+            String query = "SELECT quantityRemaining FROM EQUIPMENT_STOCK WHERE equipmentId = ?";
+            PreparedStatement statement = DatabaseHandler.getInstance().getConn().prepareStatement(query);
+            statement.setString(1, equipment.getId());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Integer quantityRemaining = rs.getInt("quantityRemaining");
+                if (equipment.getQuantity() > quantityRemaining) {
+                    AlertMaker.showErrorMessage("Error", "You only have "
+                            + quantityRemaining + " of " + equipment.getName() + " in the database," +
+                            " please select 2 or less");
+                    return false;
+                }
+            }
 
 
             PreparedStatement preparedStatement = DatabaseHandler.getInstance().getConn().prepareStatement(
@@ -61,7 +75,6 @@ public class DataHelper {
                     "UPDATE EQUIPMENT_STOCK SET quantityRemaining = quantityRemaining - ? WHERE equipmentId = ?"
             );
 
-//            TODO: Assert Quantity Remaining in the database is greater than quantity requested
             preparedStatement1.setInt(1, equipment.getQuantity());
             preparedStatement1.setString(2, equipment.getId());
 
