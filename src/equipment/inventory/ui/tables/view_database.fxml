@@ -2,17 +2,19 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="502.0" prefWidth="759.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="equipment.inventory.ui.tables.ViewDatabaseController">
-   <children>
-      <BorderPane prefHeight="200.0" prefWidth="200.0">
-         <top>
-            <MenuBar BorderPane.alignment="CENTER">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Log Out" />
-                        <MenuItem mnemonicParsing="false" text="Close" />
-                  </items>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+           minWidth="-Infinity" prefHeight="671.0" prefWidth="1243.0" xmlns="http://javafx.com/javafx/8.0.171"
+           fx:controller="equipment.inventory.ui.tables.ViewDatabaseController">
+    <children>
+        <BorderPane prefHeight="200.0" prefWidth="200.0">
+            <top>
+                <MenuBar BorderPane.alignment="CENTER">
+                    <menus>
+                        <Menu mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Log Out"/>
+                                <MenuItem mnemonicParsing="false" text="Close"/>
+                            </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                   <items>
@@ -35,26 +37,26 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <TableView fx:id="stockTableView" layoutX="96.0" layoutY="91.0" prefHeight="440.0"
-                                         prefWidth="759.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                  <columns>
-                                      <TableColumn fx:id="stockTabEquipmentID" prefWidth="75.0" text="EQUIPMENT ID"/>
-                                      <TableColumn fx:id="stockTabEquipmentName" prefWidth="75.0"
-                                                   text="EQUIPMENT NAME"/>
-                                      <TableColumn fx:id="stockTabEquipmentQuantity" prefWidth="75.0" text="QUANTITY"/>
-                                  </columns>
-                                  <columnResizePolicy>
-                                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                                  </columnResizePolicy>
-                                  <contextMenu>
-                                      <ContextMenu>
-                                          <items>
-                                              <MenuItem mnemonicParsing="false" onAction="#handleStockEditMenuOperation"
-                                                        text="Edit"/>
-                                              <MenuItem mnemonicParsing="false"
-                                                        onAction="#handleStockDeleteMenuOperation" text="Delete"/>
-                                          </items>
+                               <TableView fx:id="stockTableView" layoutX="96.0" layoutY="91.0" prefHeight="440.0"
+                                          prefWidth="759.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                   <columns>
+                                       <TableColumn fx:id="stockTabEquipmentID" prefWidth="75.0" text="EQUIPMENT ID"/>
+                                       <TableColumn fx:id="stockTabEquipmentName" prefWidth="75.0"
+                                                    text="EQUIPMENT NAME"/>
+                                       <TableColumn fx:id="stockTabEquipmentQuantity" prefWidth="75.0" text="QUANTITY"/>
+                                   </columns>
+                                   <columnResizePolicy>
+                                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                   </columnResizePolicy>
+                                   <contextMenu>
+                                       <ContextMenu>
+                                           <items>
+                                               <MenuItem mnemonicParsing="false"
+                                                         onAction="#handleStockEditMenuOperation" text="Edit"/>
+                                               <MenuItem mnemonicParsing="false"
+                                                         onAction="#handleStockDeleteMenuOperation" text="Delete"/>
+                                           </items>
                                       </ContextMenu>
                                   </contextMenu>
                               </TableView>
@@ -70,6 +72,7 @@
                                           prefWidth="759.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                    <columns>
+                                       <TableColumn fx:id="inIssueNo" prefWidth="75.0" text="ISSUE NO"/>
                                        <TableColumn fx:id="inEquipmentId" prefWidth="75.0" text="EQUIPMENT ID"/>
                                        <TableColumn fx:id="inEquipmentName" prefWidth="75.0" text="EQUIPMENT NAME"/>
                                        <TableColumn fx:id="inEquipmentQuantityBorrowed" prefWidth="75.0"

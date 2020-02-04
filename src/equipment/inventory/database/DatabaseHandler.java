@@ -94,7 +94,7 @@ public final class DatabaseHandler {
             else {
                 stmt.execute("CREATE TABLE " + BORROWED_TABLE + "(" +
                         "id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), \n" +
-                        "issueId varchar(30) not null, \n" +
+                        "issueNo varchar(30), \n" +
                         "equipmentId varchar(200), \n" +
                         "equipmentName varchar(200),\n" +
                         "quantityBorrowed INTEGER, \n" +

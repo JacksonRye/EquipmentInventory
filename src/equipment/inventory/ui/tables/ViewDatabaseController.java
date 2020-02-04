@@ -77,6 +77,8 @@ public class ViewDatabaseController implements Initializable {
     private TableColumn<BorrowedEquipment, String> inTimeReturned;
     @FXML
     private TableColumn<BorrowedEquipment, Integer> inEquipmentQuantityBorrowed;
+    @FXML
+    private TableColumn<BorrowedEquipment, String> inIssueNo;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -101,9 +103,10 @@ public class ViewDatabaseController implements Initializable {
                 String borrowedBy = resultSet.getString("borrowedBy");
                 String timeBorrowed = resultSet.getString("timeBorrowed");
                 String timeReturned = resultSet.getString("timeReturned");
+                String issueId = resultSet.getString("issueNo");
 
                 borrowedEquipmentsList.add(new BorrowedEquipment(equipmentId,
-                        equipmentName, quantityBorrowed, borrowedBy, timeBorrowed, timeReturned));
+                        equipmentName, quantityBorrowed, borrowedBy, timeBorrowed, timeReturned, issueId));
 
             }
         } catch (SQLException e) {
@@ -121,6 +124,7 @@ public class ViewDatabaseController implements Initializable {
         inBorrowedBy.setCellValueFactory(new PropertyValueFactory<>("borrowedBy"));
         inTimeBorrowed.setCellValueFactory(new PropertyValueFactory<>("timeBorrowed"));
         inTimeReturned.setCellValueFactory(new PropertyValueFactory<>("timeReturned"));
+        inIssueNo.setCellValueFactory(new PropertyValueFactory<>("issueId"));
     }
 
     private void initStaffCol() {

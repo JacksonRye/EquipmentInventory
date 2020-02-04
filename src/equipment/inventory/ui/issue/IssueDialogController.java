@@ -30,8 +30,9 @@ public class IssueDialogController implements Initializable {
     private void handleIssueOperation(ActionEvent event) {
         Long millis = System.currentTimeMillis();
         String now = EquipmentInventoryUtils.formatDateTimeString(millis);
+        String issueId = EquipmentInventoryUtils.formatSQLDateTimeString(millis);
         for (ItemController item : MainController.cartItems) {
-//            item.getSelectedItem().setQuantity(item.getQuantity());
+            item.getSelectedItem().setIssueId(issueId);
             item.getSelectedItem().setTimeBorrowed(now);
         }
         if (DataHelper.insertBorrowedEquipment(MainController.cartItems, (Staff) staffComboBox.getValue())) {

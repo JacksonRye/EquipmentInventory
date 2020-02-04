@@ -1,8 +1,8 @@
 package equipment.inventory.ui.main;
 
 import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
-import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.database.DatabaseHandler;
 import equipment.inventory.model.BorrowedEquipment;
 import equipment.inventory.model.Equipment;
@@ -14,14 +14,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 import static equipment.inventory.database.DatabaseHandler.getInstance;
@@ -34,35 +31,7 @@ public class MainController implements Initializable {
     private final static String STAFF_DOES_NOT_EXIST = "Staff Does Not Exist";
 
     @FXML
-    private JFXTextField txtFieldStaffId;
-    @FXML
-    private Text txtStaffName;
-    @FXML
-    private Text txtPhoneNumber;
-    @FXML
-    private Text txtEmail;
-    @FXML
-    private Text txtQuantityRemaining;
-    @FXML
-    private Text txtEquipmentName;
-    @FXML
-    private JFXTextField txtFieldEquipmentId;
-    @FXML
     private JFXTextField txtFieldReturnEquipmentId;
-    @FXML
-    private Text txtReturnEquipmentName;
-    @FXML
-    private Text txtReturnQuantityBorrowed;
-    @FXML
-    private Text txtReturnBorrowedBy;
-    @FXML
-    private Text txtReturnStaffName;
-    @FXML
-    private Text txtReturnStaffPhoneNumber;
-    @FXML
-    private Text txtReturnStaffEmail;
-    @FXML
-    private Text txtReturnDateIssued;
 
     private boolean isReadyForReturn = false;
 
@@ -75,6 +44,8 @@ public class MainController implements Initializable {
     private JFXComboBox comboBoxEquipments;
 
     private ObservableList<Equipment> databaseEquipmentList = FXCollections.observableArrayList();
+    @FXML
+    private JFXTextArea textIssueReport;
 
 
     @FXML
@@ -105,12 +76,12 @@ public class MainController implements Initializable {
 
 
     @FXML
-    private void loadEquipmentInfo(ActionEvent event) {
+    private void loadIssueInfo(ActionEvent event) {
         ObservableList<String> borrowedData = FXCollections.observableArrayList();
         isReadyForReturn = false;
 
         try {
-            String issueId = txtFieldReturnEquipmentId.getText();
+            String issueNo = txtFieldReturnEquipmentId.getText();
             String query = "SELECT BORROWED_TABLE.equipmentId, BORROWED_TABLE.equipmentName, BORROWED_TABLE.quantityBorrowed," +
                     "BORROWED_TABLE.borrowedBy, BORROWED_TABLE.timeBorrowed,\n" +
                     "STAFF_TABLE.staffId, STAFF_TABLE.staffFirstName, STAFF_TABLE.staffSurname, STAFF_TABLE.phoneNumber, STAFF_TABLE.email\n" +
@@ -119,46 +90,40 @@ public class MainController implements Initializable {
                     "ON BORROWED_TABLE.borrowedBy = STAFF_TABLE.staffId\n" +
                     "LEFT JOIN EQUIPMENT_STOCK\n" +
                     "ON BORROWED_TABLE.equipmentId = EQUIPMENT_STOCK.equipmentId\n" +
-                    "WHERE BORROWED_TABLE.issueId = " + issueId + "";
+                    "WHERE BORROWED_TABLE.issueNo = ?";
 
-            ResultSet resultSet = handler.execQuery(query);
+            PreparedStatement statement = handler.getConn().prepareStatement(query);
+            statement.setString(1, issueNo);
+            ResultSet resultSet = statement.executeQuery();
+            StringBuilder stringBuilder = new StringBuilder();
             if (resultSet.next()) {
-                txtReturnEquipmentName.setText(resultSet.getString("equipmentName"));
-                txtReturnBorrowedBy.setText(resultSet.getString("borrowedBy"));
-
-                Timestamp mDateIssued = resultSet.getTimestamp("timeBorrowed");
-                Date dateOfIssue = new Date(mDateIssued.getTime());
-                String timeFormatForHumans = EquipmentInventoryUtils.formatDateTimeString(dateOfIssue);
-                txtReturnDateIssued.setText(timeFormatForHumans);
-
-                txtReturnQuantityBorrowed.setText(String.valueOf(resultSet.getInt("quantityBorrowed")));
-                txtReturnStaffEmail.setText(resultSet.getString("email"));
-                txtReturnStaffName.setText(resultSet.getString("staffFirstName")
-                        + " " + resultSet.getString("staffSurname"));
-                txtReturnStaffPhoneNumber.setText(resultSet.getString("phoneNumber"));
-
-                isReadyForReturn = true;
-            } else {
-                AlertMaker.showSimpleAlert("Not Found", "Item not in Database");
+                stringBuilder.append("Staff ID: " + resultSet.getString("staffId"));
             }
+            while (resultSet.next()) {
+
+            }
+            textIssueReport.setText(stringBuilder.toString());
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-
+    // TODO: HANDLE EQUIPMENT RETURN
     @FXML
     private void handleEquipmentReturnOperation(ActionEvent event) {
     }
 
+    //    TODO: HANDLE CANCEL RETURN OPERATION
     @FXML
     private void handleReturnCancelOperation(ActionEvent event) {
     }
 
+    //    TODO: CREATE SETTINGS PANEL
     @FXML
     private void handleSettingsOperation(ActionEvent event) {
     }
 
+    //    TODO: IMPLEMENT CLEAR SELECTION ON BUTTON PRESS AND ON ISSUE COMPLETE
     @FXML
     private void clearCart(ActionEvent event) {
     }
