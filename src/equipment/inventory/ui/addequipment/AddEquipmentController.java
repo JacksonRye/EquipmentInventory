@@ -56,6 +56,7 @@ public class AddEquipmentController implements Initializable {
 
         if (result) {
             try {
+//               TODO: REFESH COMBOBOX AFTER ADD EQUIPMENTS
 
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipment/inventory/ui/main/Main.fxml"));
                 loader.load();

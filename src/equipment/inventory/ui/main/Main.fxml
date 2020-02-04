@@ -41,8 +41,8 @@
                                       <children>
                                           <HBox>
                                               <children>
-                                                  <JFXComboBox fx:id="comboBoxEquipments" editable="true"
-                                                               labelFloat="true" prefHeight="26.0" prefWidth="407.0"
+                                                  <JFXComboBox fx:id="comboBoxEquipments" labelFloat="true"
+                                                               prefHeight="26.0" prefWidth="407.0"
                                                                promptText="Select Equipment">
                                                       <HBox.margin>
                                                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>

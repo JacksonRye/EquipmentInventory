@@ -93,13 +93,14 @@ public final class DatabaseHandler {
 
             else {
                 stmt.execute("CREATE TABLE " + BORROWED_TABLE + "(" +
-                        "issueId INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), \n" +
+                        "id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), \n" +
+                        "issueId varchar(30) not null, \n" +
                         "equipmentId varchar(200), \n" +
                         "equipmentName varchar(200),\n" +
                         "quantityBorrowed INTEGER, \n" +
                         "borrowedBy varchar(200), \n" +
-                        "timeBorrowed timestamp default CURRENT_TIMESTAMP, \n" +
-                        "timeReturned timestamp default null, \n" +
+                        "timeBorrowed varchar(30) default null, \n" +
+                        "timeReturned varchar(30) default null, \n" +
                         "FOREIGN KEY (equipmentId) REFERENCES " + EQUIPMENT_STOCK_TABLE +
                         "(equipmentId)," +
                         "FOREIGN KEY (borrowedBy) REFERENCES " + STAFF_TABLE + "(staffId)" +

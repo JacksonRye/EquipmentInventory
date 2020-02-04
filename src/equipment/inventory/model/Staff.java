@@ -40,5 +40,9 @@ public class Staff {
         return email.get();
     }
 
+    @Override
+    public String toString() {
+        return "ID: " + id.get() + ", " + surName.get() + " " + firstName.get();
+    }
 }
 

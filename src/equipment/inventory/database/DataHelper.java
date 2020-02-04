@@ -4,6 +4,8 @@ import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.model.BorrowedEquipment;
 import equipment.inventory.model.Equipment;
 import equipment.inventory.model.Staff;
+import equipment.inventory.ui.main.item.ItemController;
+import javafx.collections.ObservableList;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,6 +45,62 @@ public class DataHelper {
         return false;
     }
 
+    //    TODO: CORRECTLY IMPLEMENT THIS STUFF
+    public static boolean insertBorrowedEquipment(ObservableList<ItemController> itemList, Staff staff) {
+        try {
+            DatabaseHandler.getInstance().getConn().setAutoCommit(false);
+            System.out.println("autocommit off");
+            for (ItemController item : itemList) {
+                PreparedStatement preparedStatement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                        "SELECT quantityRemaining FROM EQUIPMENT_STOCK where equipmentId = ?"
+                );
+                preparedStatement.setString(1, item.getSelectedItem().getId());
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    if (resultSet.getInt("quantityRemaining") < item.getSelectedItem().getQuantity()) {
+                        AlertMaker.showErrorMessage("Out of Stock", "You only have " + item.getSelectedItem().getQuantity()
+                                + " of " + item.getSelectedItem().getName() + " in stock");
+                        DatabaseHandler.getInstance().getConn().rollback();
+                        System.out.println("Performed Rollback");
+                        return false;
+                    }
+                }
+
+                PreparedStatement statement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                        "INSERT INTO BORROWED_TABLE(equipmentId, equipmentName," +
+                                "quantityBorrowed, borrowedBy, timeBorrowed, timeReturned) VALUES (?, ?, ?, ?, ?, ?)"
+                );
+
+                statement.setString(1, item.getSelectedItem().getId());
+                statement.setString(2, item.getSelectedItem().getName());
+                statement.setInt(3, item.getQuantity());
+                statement.setString(4, staff.getId());
+                statement.setString(5, item.getSelectedItem().getTimeBorrowed());
+                statement.setString(6, null);
+
+                if (statement.executeUpdate() > 0) {
+                    PreparedStatement statement1 = DatabaseHandler.getInstance().getConn().prepareStatement(
+                            "UPDATE EQUIPMENT_STOCK SET quantityRemaining = quantityRemaining - ?"
+                    );
+                    statement1.setInt(1, item.getSelectedItem().getQuantity());
+                    if (statement1.executeUpdate() > 0) continue;
+                }
+
+            }
+            DatabaseHandler.getInstance().getConn().commit();
+            System.out.println("commit");
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                DatabaseHandler.getInstance().getConn().setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
 
     public static boolean insertBorrowedEquipment(BorrowedEquipment equipment) {
         try {

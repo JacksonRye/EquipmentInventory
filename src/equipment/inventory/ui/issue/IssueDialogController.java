@@ -1,61 +1,67 @@
 package equipment.inventory.ui.issue;
 
+import com.jfoenix.controls.JFXComboBox;
 import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.database.DataHelper;
-import equipment.inventory.model.BorrowedEquipment;
+import equipment.inventory.database.DatabaseHandler;
+import equipment.inventory.model.Staff;
 import equipment.inventory.ui.main.MainController;
+import equipment.inventory.ui.main.item.ItemController;
+import equipment.inventory.utils.EquipmentInventoryUtils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class IssueDialogController implements Initializable {
+
+    private ObservableList<Staff> staffList = FXCollections.observableArrayList();
     @FXML
-    private Text txtIssueConfirmation;
-    @FXML
-    private Spinner spinnerQuantity;
-
-    private BorrowedEquipment equipment;
-
-    private MainController controller;
-
+    private JFXComboBox staffComboBox;
 
     @FXML
     private void handleIssueOperation(ActionEvent event) {
-        equipment.setQuantity((Integer) spinnerQuantity.getValue());
-        if (DataHelper.insertBorrowedEquipment(equipment)) {
-            AlertMaker.showSimpleAlert("Success", "Items Issued Successfully");
-            ((Stage) spinnerQuantity.getScene().getWindow()).close();
-        } else {
-            System.out.println("Borrowed Equipment Failed");
+        Long millis = System.currentTimeMillis();
+        String now = EquipmentInventoryUtils.formatDateTimeString(millis);
+        for (ItemController item : MainController.cartItems) {
+//            item.getSelectedItem().setQuantity(item.getQuantity());
+            item.getSelectedItem().setTimeBorrowed(now);
         }
-
-    }
-
-
-    public void inflateUI(BorrowedEquipment borrowedEquipment, MainController mainController) {
-        controller = mainController;
-        equipment = borrowedEquipment;
-        txtIssueConfirmation.setText("You are about to Issue " +
-                equipment.getId() + " to " + equipment.getBorrowedBy());
-
+        if (DataHelper.insertBorrowedEquipment(MainController.cartItems, (Staff) staffComboBox.getValue())) {
+            AlertMaker.showSimpleAlert("Success", "Issue inserted successfully");
+            return;
+        }
     }
 
     @FXML
     private void handleCancelOperation(ActionEvent event) {
-        ((Stage) (txtIssueConfirmation.getScene().getWindow())).close();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        SpinnerValueFactory<Integer> quantityValuesFactory =
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20000, 1);
-        spinnerQuantity.setValueFactory(quantityValuesFactory);
+        try {
+            PreparedStatement preparedStatement = DatabaseHandler.getInstance().getConn().prepareStatement("SELECT * FROM STAFF_TABLE");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                staffList.add(new Staff(
+                        resultSet.getString("staffId"),
+                        resultSet.getString("staffFirstName"),
+                        resultSet.getString("staffSurname"),
+                        resultSet.getString("phoneNumber"),
+                        resultSet.getString("email")
+                ));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        staffComboBox.setItems(staffList);
     }
 }

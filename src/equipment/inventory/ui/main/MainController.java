@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.database.DatabaseHandler;
+import equipment.inventory.model.BorrowedEquipment;
 import equipment.inventory.model.Equipment;
 import equipment.inventory.ui.main.item.ItemController;
 import equipment.inventory.utils.EquipmentInventoryUtils;
@@ -62,11 +63,17 @@ public class MainController implements Initializable {
     private Text txtReturnStaffEmail;
     @FXML
     private Text txtReturnDateIssued;
+
     private boolean isReadyForReturn = false;
+
     @FXML
     private VBox vboxCart;
+
+    public static ObservableList<ItemController> cartItems = FXCollections.observableArrayList();
+
     @FXML
     private JFXComboBox comboBoxEquipments;
+
     private ObservableList<Equipment> databaseEquipmentList = FXCollections.observableArrayList();
 
 
@@ -92,8 +99,9 @@ public class MainController implements Initializable {
     @FXML
     private void handleIssueOperation(ActionEvent event) {
 //    TODO: HANDLE ISSUE OPERATION
-
-        }
+        EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/issue/issue_dialog.fxml"),
+                "Issue", null);
+    }
 
 
     @FXML
@@ -157,9 +165,18 @@ public class MainController implements Initializable {
 
     @FXML
     private void addToCart(ActionEvent event) {
-        String selectedItem = String.valueOf(comboBoxEquipments.getSelectionModel().getSelectedItem());
-        vboxCart.getChildren().add(new ItemController(new Equipment("1", selectedItem, 3)));
+        Equipment selectedItem = (Equipment) comboBoxEquipments.getSelectionModel().getSelectedItem();
+        for (ItemController item : cartItems) {
+            if (item.getIdText().equals(selectedItem.getId())) return;
+        }
+        ItemController item = new ItemController(new BorrowedEquipment(selectedItem), this);
+        cartItems.add(item);
+        vboxCart.getChildren().setAll(cartItems);
+    }
 
+    public void removeFromCart(ItemController itemController) {
+        cartItems.remove(itemController);
+        vboxCart.getChildren().setAll(cartItems);
     }
 
     @Override

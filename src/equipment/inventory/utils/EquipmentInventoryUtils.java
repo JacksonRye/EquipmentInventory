@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 public class EquipmentInventoryUtils {
 
+    private static final SimpleDateFormat SQL_DATE_TIME_FORMAT = new SimpleDateFormat("ddMMyy-HHmmss");
     private static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss a");
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -59,4 +60,7 @@ public class EquipmentInventoryUtils {
         return DATE_FORMAT.format(date);
     }
 
+    public static String formatSQLDateTimeString(Long millis) {
+        return SQL_DATE_TIME_FORMAT.format(millis);
+    }
 }
