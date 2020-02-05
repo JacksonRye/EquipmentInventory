@@ -19,16 +19,17 @@ import java.util.ResourceBundle;
 public class ItemController extends HBox implements Initializable {
 
     private final MainController mainController;
+
     ObservableList controlList = FXCollections.observableArrayList();
     private BorrowedEquipment equipment;
 
     private Text name = new Text("text");
     private Text id = new Text("text");
-    private Spinner quantity = new Spinner();
+    private Spinner spinnerQuantity = new Spinner();
     private Button cancelBtn = new Button("X");
 
     {
-        controlList.addAll(id, name, quantity, cancelBtn);
+        controlList.addAll(id, name, spinnerQuantity, cancelBtn);
 
     }
 
@@ -41,7 +42,7 @@ public class ItemController extends HBox implements Initializable {
         }
         id.setText(equipment.getId());
         name.setText(equipment.getName());
-        quantity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 1));
+        spinnerQuantity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 1));
         cancelBtn.setOnAction((e) -> removeItem(ItemController.this));
         this.getChildren().addAll(controlList);
     }
@@ -63,7 +64,7 @@ public class ItemController extends HBox implements Initializable {
         return equipment;
     }
 
-    public Integer getQuantity() {
-        return (Integer) quantity.getValue();
+    public Integer getSpinnerQuantity() {
+        return (Integer) spinnerQuantity.getValue();
     }
 }

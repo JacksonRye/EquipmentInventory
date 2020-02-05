@@ -7,6 +7,7 @@ import equipment.inventory.database.DatabaseHandler;
 import equipment.inventory.model.BorrowedEquipment;
 import equipment.inventory.model.Equipment;
 import equipment.inventory.ui.main.item.ItemController;
+import equipment.inventory.ui.returndialog.ReturnController;
 import equipment.inventory.utils.EquipmentInventoryUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,6 +40,8 @@ public class MainController implements Initializable {
     private VBox vboxCart;
 
     public static ObservableList<ItemController> cartItems = FXCollections.observableArrayList();
+
+    public static ObservableList<ItemController> returnItems = FXCollections.observableArrayList();
 
     @FXML
     private JFXComboBox comboBoxEquipments;
@@ -97,10 +100,47 @@ public class MainController implements Initializable {
             ResultSet resultSet = statement.executeQuery();
             StringBuilder stringBuilder = new StringBuilder();
             if (resultSet.next()) {
-                stringBuilder.append("Staff ID: " + resultSet.getString("staffId"));
-            }
-            while (resultSet.next()) {
+                stringBuilder.append("Staff Information---\n");
 
+                stringBuilder.append(resultSet.getString("staffId")).append("\n");
+                stringBuilder.append(resultSet.getString("staffSurname"))
+                        .append(", ").append(resultSet.getString("staffFirstName")).append("\n");
+                stringBuilder.append(resultSet.getString("phoneNumber")).append("\n");
+                stringBuilder.append(resultSet.getString("email")).append("\n");
+                stringBuilder.append(resultSet.getString("timeBorrowed")).append("\n");
+
+
+                stringBuilder.append("Equipment Information").append("\n");
+
+                String equipmentName = resultSet.getString("equipmentName");
+                String equipmentId = resultSet.getString("equipmentId");
+                Integer quantityBorrowed = resultSet.getInt("quantityBorrowed");
+
+                stringBuilder.append(equipmentName).append("\n");
+                stringBuilder.append(quantityBorrowed).append("\n");
+                stringBuilder.append(equipmentId).append("\n");
+
+                returnItems.add(new ItemController(new BorrowedEquipment(equipmentId, equipmentName, quantityBorrowed),
+                        this));
+
+
+                while (true) {
+                    if (resultSet.next()) {
+                        equipmentName = resultSet.getString("equipmentName");
+                        equipmentId = resultSet.getString("equipmentId");
+                        quantityBorrowed = resultSet.getInt("quantityBorrowed");
+
+                        stringBuilder.append(equipmentName).append("\n");
+                        stringBuilder.append(quantityBorrowed).append("\n");
+                        stringBuilder.append(equipmentId).append("\n");
+                        returnItems.add(new ItemController(new BorrowedEquipment(equipmentId, equipmentName, quantityBorrowed),
+                                this));
+                    } else break;
+                }
+
+            } else {
+                textIssueReport.setText("Issue No. not Valid");
+                return;
             }
             textIssueReport.setText(stringBuilder.toString());
         } catch (Exception ex) {
@@ -108,9 +148,11 @@ public class MainController implements Initializable {
         }
     }
 
-    // TODO: HANDLE EQUIPMENT RETURN
     @FXML
     private void handleEquipmentReturnOperation(ActionEvent event) {
+        ReturnController controller = (ReturnController) EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/returndialog/return.fxml"),
+                "Return Equipments", null);
+        controller.setIssueNo(txtFieldReturnEquipmentId.getText());
     }
 
     //    TODO: HANDLE CANCEL RETURN OPERATION

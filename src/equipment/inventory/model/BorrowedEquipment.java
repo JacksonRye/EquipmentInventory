@@ -29,9 +29,14 @@ public class BorrowedEquipment extends Equipment {
         this.timeReturned = new SimpleStringProperty();
     }
 
-    public void setQuantity(Integer quantity) {
-        super.setQuantity(quantity);
+    public BorrowedEquipment(String id, String name, Integer quantity) {
+        super(id, name, quantity);
+        this.issueId = new SimpleStringProperty();
+        this.borrowedBy = new SimpleStringProperty();
+        this.timeBorrowed = new SimpleStringProperty();
+        this.timeReturned = new SimpleStringProperty();
     }
+
 
     public String getBorrowedBy() {
         return borrowedBy.get();

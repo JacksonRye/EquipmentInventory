@@ -1,10 +1,10 @@
 package equipment.inventory.database;
 
 import equipment.inventory.alert.AlertMaker;
-import equipment.inventory.model.BorrowedEquipment;
 import equipment.inventory.model.Equipment;
 import equipment.inventory.model.Staff;
 import equipment.inventory.ui.main.item.ItemController;
+import equipment.inventory.utils.EquipmentInventoryUtils;
 import javafx.collections.ObservableList;
 
 import java.sql.PreparedStatement;
@@ -45,10 +45,10 @@ public class DataHelper {
         return false;
     }
 
+    //    TODO: POSSIBLE BUG, UPDATES ITEMS TWICE
     public static boolean insertBorrowedEquipment(ObservableList<ItemController> itemList, Staff staff) {
         try {
             DatabaseHandler.getInstance().getConn().setAutoCommit(false);
-            System.out.println("autocommit off");
             for (ItemController item : itemList) {
                 PreparedStatement preparedStatement = DatabaseHandler.getInstance().getConn().prepareStatement(
                         "SELECT quantityRemaining FROM EQUIPMENT_STOCK where equipmentId = ?"
@@ -56,11 +56,12 @@ public class DataHelper {
                 preparedStatement.setString(1, item.getSelectedItem().getId());
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
-                    if (resultSet.getInt("quantityRemaining") < item.getQuantity()) {
+                    Integer quantityRemaining = resultSet.getInt("quantityRemaining");
+                    Integer quantityRequested = item.getSpinnerQuantity();
+                    if (quantityRemaining < quantityRequested) {
                         AlertMaker.showErrorMessage("Out of Stock", "You only have " + resultSet.getInt("quantityRemaining")
                                 + " of " + item.getSelectedItem().getName() + " in stock");
                         DatabaseHandler.getInstance().getConn().rollback();
-                        System.out.println("Performed Rollback");
                         return false;
                     }
                 }
@@ -72,82 +73,82 @@ public class DataHelper {
 
                 statement.setString(1, item.getSelectedItem().getId());
                 statement.setString(2, item.getSelectedItem().getName());
-                statement.setInt(3, item.getQuantity());
+                statement.setInt(3, item.getSpinnerQuantity());
                 statement.setString(4, staff.getId());
                 statement.setString(5, item.getSelectedItem().getTimeBorrowed());
                 statement.setString(6, null);
                 statement.setString(7, item.getSelectedItem().getIssueId());
 
                 if (statement.executeUpdate() > 0) {
-                    System.out.println("Did we get here?");
                     PreparedStatement statement1 = DatabaseHandler.getInstance().getConn().prepareStatement(
-                            "UPDATE EQUIPMENT_STOCK SET quantityRemaining = quantityRemaining - ?"
+                            "UPDATE EQUIPMENT_STOCK SET quantityRemaining = quantityRemaining - ? WHERE equipmentId = ?"
                     );
-                    statement1.setInt(1, item.getQuantity());
-                    if (statement1.executeUpdate() > 0) continue;
+                    statement1.setInt(1, item.getSpinnerQuantity());
+                    statement1.setString(2, item.getSelectedItem().getId());
+                    if (statement1.executeUpdate() > 0) {
+                        continue;
+                    }
                 }
 
             }
             DatabaseHandler.getInstance().getConn().commit();
-            System.out.println("commit");
-            DatabaseHandler.getInstance().getConn().setAutoCommit(true);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
             try {
                 DatabaseHandler.getInstance().getConn().setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    public static boolean returnEquipments(ObservableList<ItemController> items, String issueNo) {
+        String now = EquipmentInventoryUtils.formatDateTimeString(System.currentTimeMillis());
+        try {
+            DatabaseHandler.getInstance().getConn().setAutoCommit(false);
+            for (ItemController item : items) {
+                PreparedStatement statement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                        "UPDATE EQUIPMENT_STOCK SET quantityRemaining = quantityRemaining + ? WHERE equipmentId = ?"
+                );
+
+                statement.setInt(1, item.getSpinnerQuantity());
+                statement.setString(2, item.getIdText());
+
+                if (statement.executeUpdate() > 0) {
+
+                    statement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                            "UPDATE BORROWED_TABLE SET timeReturned = ? WHERE issueNo = ?"
+                    );
+
+                    statement.setString(1, now);
+                    statement.setString(2, issueNo);
+                    if (statement.executeUpdate() > 0) continue;
+
+                }
+            }
+            AlertMaker.showSimpleAlert("Success", "Items Returned Successfully");
+            return true;
+
+        } catch (SQLException e) {
+            try {
+                DatabaseHandler.getInstance().getConn().rollback();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-        }
-        return false;
-    }
-
-    public static boolean insertBorrowedEquipment(BorrowedEquipment equipment) {
-        try {
-            String query = "SELECT quantityRemaining FROM EQUIPMENT_STOCK WHERE equipmentId = ?";
-            PreparedStatement statement = DatabaseHandler.getInstance().getConn().prepareStatement(query);
-            statement.setString(1, equipment.getId());
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                Integer quantityRemaining = rs.getInt("quantityRemaining");
-                if (equipment.getQuantity() > quantityRemaining) {
-                    AlertMaker.showErrorMessage("Error", "You only have "
-                            + quantityRemaining + " of " + equipment.getName() + " in the database," +
-                            " please select 2 or less");
-                    return false;
-                }
+            e.printStackTrace();
+        } finally {
+            try {
+                DatabaseHandler.getInstance().getConn().setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-
-
-            PreparedStatement preparedStatement = DatabaseHandler.getInstance().getConn().prepareStatement(
-                    "INSERT INTO BORROWED_TABLE(equipmentId, equipmentName, quantityBorrowed," +
-                            "borrowedBy) VALUES (?,?,?,?)"
-            );
-
-            preparedStatement.setString(1, equipment.getId());
-            preparedStatement.setString(2, equipment.getName());
-            preparedStatement.setInt(3, equipment.getQuantity());
-            preparedStatement.setString(4, equipment.getBorrowedBy());
-
-            PreparedStatement preparedStatement1 = DatabaseHandler.getInstance().getConn().prepareStatement(
-                    "UPDATE EQUIPMENT_STOCK SET quantityRemaining = quantityRemaining - ? WHERE equipmentId = ?"
-            );
-
-            preparedStatement1.setInt(1, equipment.getQuantity());
-            preparedStatement1.setString(2, equipment.getId());
-
-
-            return (preparedStatement.executeUpdate() > 0 && preparedStatement1.executeUpdate() > 0);
-
-        } catch (SQLException e) {
-            AlertMaker.showErrorMessage(e);
         }
-
+        AlertMaker.showErrorMessage("Failed", "Failed to Return Equipments");
         return false;
-
     }
-
 
     public static boolean updateEquipment(Equipment equipment) {
         try {

@@ -28,9 +28,6 @@ public class Equipment {
         return quantity.get();
     }
 
-    public void setQuantity(Integer quantity) {
-        this.quantity.set(quantity);
-    }
 
     @Override
     public String toString() {
