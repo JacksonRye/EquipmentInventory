@@ -3,9 +3,12 @@ package equipment.inventory.ui.main;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import equipment.inventory.alert.AlertMaker;
 import equipment.inventory.database.DatabaseHandler;
 import equipment.inventory.model.BorrowedEquipment;
 import equipment.inventory.model.Equipment;
+import equipment.inventory.ui.addequipment.AddEquipmentController;
+import equipment.inventory.ui.issue.IssueDialogController;
 import equipment.inventory.ui.main.item.ItemController;
 import equipment.inventory.ui.returndialog.ReturnController;
 import equipment.inventory.utils.EquipmentInventoryUtils;
@@ -50,7 +53,6 @@ public class MainController implements Initializable {
     @FXML
     private JFXTextArea textIssueReport;
 
-
     @FXML
     private void handleAddStaffOperation(ActionEvent event) {
         EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/addstaff/add_staff.fxml"),
@@ -59,8 +61,9 @@ public class MainController implements Initializable {
 
     @FXML
     private void handleAddEquipmentOperation(ActionEvent event) {
-        EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/addequipment/add_equipment.fxml"),
+        AddEquipmentController addEquipmentController = (AddEquipmentController) EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/addequipment/add_equipment.fxml"),
                 "Add Equipment", null);
+        addEquipmentController.setUp(this);
     }
 
     @FXML
@@ -72,92 +75,103 @@ public class MainController implements Initializable {
 
     @FXML
     private void handleIssueOperation(ActionEvent event) {
-//    TODO: HANDLE ISSUE OPERATION
-        EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/issue/issue_dialog.fxml"),
+        if (cartItems.isEmpty()) {
+            AlertMaker.showErrorMessage("Error", "Cart is Empty, Add Items to it");
+            return;
+        }
+        IssueDialogController issueDialogController = (IssueDialogController) EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/issue/issue_dialog.fxml"),
                 "Issue", null);
+        issueDialogController.setUp(this);
     }
 
 
     @FXML
     private void loadIssueInfo(ActionEvent event) {
-        ObservableList<String> borrowedData = FXCollections.observableArrayList();
         isReadyForReturn = false;
 
-        try {
-            String issueNo = txtFieldReturnEquipmentId.getText();
-            String query = "SELECT BORROWED_TABLE.equipmentId, BORROWED_TABLE.equipmentName, BORROWED_TABLE.quantityBorrowed," +
-                    "BORROWED_TABLE.borrowedBy, BORROWED_TABLE.timeBorrowed,\n" +
-                    "STAFF_TABLE.staffId, STAFF_TABLE.staffFirstName, STAFF_TABLE.staffSurname, STAFF_TABLE.phoneNumber, STAFF_TABLE.email\n" +
-                    "FROM BORROWED_TABLE\n" +
-                    "LEFT JOIN STAFF_TABLE\n" +
-                    "ON BORROWED_TABLE.borrowedBy = STAFF_TABLE.staffId\n" +
-                    "LEFT JOIN EQUIPMENT_STOCK\n" +
-                    "ON BORROWED_TABLE.equipmentId = EQUIPMENT_STOCK.equipmentId\n" +
-                    "WHERE BORROWED_TABLE.issueNo = ?";
+        if (textIssueReport.getText() != null) {
 
-            PreparedStatement statement = handler.getConn().prepareStatement(query);
-            statement.setString(1, issueNo);
-            ResultSet resultSet = statement.executeQuery();
-            StringBuilder stringBuilder = new StringBuilder();
-            if (resultSet.next()) {
-                stringBuilder.append("Staff Information---\n");
+            try {
+                String issueNo = txtFieldReturnEquipmentId.getText();
+                String query = "SELECT BORROWED_TABLE.equipmentId, BORROWED_TABLE.equipmentName, BORROWED_TABLE.quantityBorrowed," +
+                        "BORROWED_TABLE.borrowedBy, BORROWED_TABLE.timeBorrowed,\n" +
+                        "STAFF_TABLE.staffId, STAFF_TABLE.staffFirstName, STAFF_TABLE.staffSurname, STAFF_TABLE.phoneNumber, STAFF_TABLE.email\n" +
+                        "FROM BORROWED_TABLE\n" +
+                        "LEFT JOIN STAFF_TABLE\n" +
+                        "ON BORROWED_TABLE.borrowedBy = STAFF_TABLE.staffId\n" +
+                        "LEFT JOIN EQUIPMENT_STOCK\n" +
+                        "ON BORROWED_TABLE.equipmentId = EQUIPMENT_STOCK.equipmentId\n" +
+                        "WHERE BORROWED_TABLE.issueNo = ?";
 
-                stringBuilder.append(resultSet.getString("staffId")).append("\n");
-                stringBuilder.append(resultSet.getString("staffSurname"))
-                        .append(", ").append(resultSet.getString("staffFirstName")).append("\n");
-                stringBuilder.append(resultSet.getString("phoneNumber")).append("\n");
-                stringBuilder.append(resultSet.getString("email")).append("\n");
-                stringBuilder.append(resultSet.getString("timeBorrowed")).append("\n");
+                PreparedStatement statement = handler.getConn().prepareStatement(query);
+                statement.setString(1, issueNo);
+                ResultSet resultSet = statement.executeQuery();
+                StringBuilder stringBuilder = new StringBuilder();
+                if (resultSet.next()) {
+                    stringBuilder.append("Staff Information---").append("\n").append("\n");
 
-
-                stringBuilder.append("Equipment Information").append("\n");
-
-                String equipmentName = resultSet.getString("equipmentName");
-                String equipmentId = resultSet.getString("equipmentId");
-                Integer quantityBorrowed = resultSet.getInt("quantityBorrowed");
-
-                stringBuilder.append(equipmentName).append("\n");
-                stringBuilder.append(quantityBorrowed).append("\n");
-                stringBuilder.append(equipmentId).append("\n");
-
-                returnItems.add(new ItemController(new BorrowedEquipment(equipmentId, equipmentName, quantityBorrowed),
-                        this));
+                    stringBuilder.append("\t").append(resultSet.getString("staffId")).append("\n");
+                    stringBuilder.append("\t").append(resultSet.getString("staffSurname"))
+                            .append(", ").append(resultSet.getString("staffFirstName")).append("\n");
+                    stringBuilder.append("\t").append(resultSet.getString("phoneNumber")).append("\n");
+                    stringBuilder.append("\t").append(resultSet.getString("email")).append("\n");
+                    stringBuilder.append("\t").append(resultSet.getString("timeBorrowed")).append("\n");
 
 
-                while (true) {
-                    if (resultSet.next()) {
-                        equipmentName = resultSet.getString("equipmentName");
-                        equipmentId = resultSet.getString("equipmentId");
-                        quantityBorrowed = resultSet.getInt("quantityBorrowed");
+                    stringBuilder.append("Equipment Information").append("\n").append("\n");
 
-                        stringBuilder.append(equipmentName).append("\n");
-                        stringBuilder.append(quantityBorrowed).append("\n");
-                        stringBuilder.append(equipmentId).append("\n");
-                        returnItems.add(new ItemController(new BorrowedEquipment(equipmentId, equipmentName, quantityBorrowed),
-                                this));
-                    } else break;
+                    String equipmentName = resultSet.getString("equipmentName");
+                    String equipmentId = resultSet.getString("equipmentId");
+                    Integer quantityBorrowed = resultSet.getInt("quantityBorrowed");
+
+                    stringBuilder.append("\t").append(equipmentName).append("\n");
+                    stringBuilder.append("\t").append(quantityBorrowed).append("\n");
+                    stringBuilder.append("\t").append(equipmentId).append("\n");
+
+                    returnItems.add(new ItemController(new BorrowedEquipment(equipmentId, equipmentName, quantityBorrowed),
+                            this));
+
+
+                    while (true) {
+                        if (resultSet.next()) {
+                            equipmentName = resultSet.getString("equipmentName");
+                            equipmentId = resultSet.getString("equipmentId");
+                            quantityBorrowed = resultSet.getInt("quantityBorrowed");
+
+                            stringBuilder.append("\t").append(equipmentName).append("\n");
+                            stringBuilder.append("\t").append(quantityBorrowed).append("\n");
+                            stringBuilder.append("\t").append(equipmentId).append("\n");
+                            returnItems.add(new ItemController(new BorrowedEquipment(equipmentId, equipmentName, quantityBorrowed),
+                                    this));
+                        } else break;
+                    }
+
+                } else {
+                    textIssueReport.setText("Issue No. not Valid");
+                    return;
                 }
-
-            } else {
-                textIssueReport.setText("Issue No. not Valid");
-                return;
+                textIssueReport.setText(stringBuilder.toString());
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
-            textIssueReport.setText(stringBuilder.toString());
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
+
     }
+
+//    TODO: BUG, ITEMS ADDED TO returnItems multiple times;
 
     @FXML
     private void handleEquipmentReturnOperation(ActionEvent event) {
         ReturnController controller = (ReturnController) EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/returndialog/return.fxml"),
                 "Return Equipments", null);
         controller.setIssueNo(txtFieldReturnEquipmentId.getText());
+        txtFieldReturnEquipmentId.clear();
     }
 
-    //    TODO: HANDLE CANCEL RETURN OPERATION
     @FXML
     private void handleReturnCancelOperation(ActionEvent event) {
+        txtFieldReturnEquipmentId.clear();
+        textIssueReport.clear();
     }
 
     //    TODO: CREATE SETTINGS PANEL
@@ -165,24 +179,33 @@ public class MainController implements Initializable {
     private void handleSettingsOperation(ActionEvent event) {
     }
 
-    //    TODO: IMPLEMENT CLEAR SELECTION ON BUTTON PRESS AND ON ISSUE COMPLETE
     @FXML
-    private void clearCart(ActionEvent event) {
+    public void clearCart(ActionEvent event) {
+        cartItems.clear();
+        setCartItems();
     }
 
     @FXML
     private void addToCart(ActionEvent event) {
         Equipment selectedItem = (Equipment) comboBoxEquipments.getSelectionModel().getSelectedItem();
+        if (selectedItem == null) {
+            AlertMaker.showErrorMessage("Error", "Invalid Equipment selected");
+            return;
+        }
         for (ItemController item : cartItems) {
             if (item.getIdText().equals(selectedItem.getId())) return;
         }
         ItemController item = new ItemController(new BorrowedEquipment(selectedItem), this);
         cartItems.add(item);
-        vboxCart.getChildren().setAll(cartItems);
+        setCartItems();
     }
 
     public void removeFromCart(ItemController itemController) {
         cartItems.remove(itemController);
+        setCartItems();
+    }
+
+    void setCartItems() {
         vboxCart.getChildren().setAll(cartItems);
     }
 
@@ -190,6 +213,7 @@ public class MainController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadComboBox();
     }
+
 
     //  TODO: CREATE AUTO-COMPLETE COMBO BOX
     public void loadComboBox() {

@@ -98,6 +98,7 @@ public final class DatabaseHandler {
                         "equipmentId varchar(200), \n" +
                         "equipmentName varchar(200),\n" +
                         "quantityBorrowed INTEGER, \n" +
+                        "quantityReturned INTEGER default null, \n" +
                         "borrowedBy varchar(200), \n" +
                         "timeBorrowed varchar(30) default null, \n" +
                         "timeReturned varchar(30) default null, \n" +

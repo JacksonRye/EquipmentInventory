@@ -54,7 +54,7 @@ public class AddStaffController implements Initializable {
             return;
 
         } else {
-            AlertMaker.showErrorMessage("Error", "Failed to Add Staff");
+            AlertMaker.showErrorMessage("Error", "Failed to Add Staff, Staff Id may already exist");
             return;
         }
     }

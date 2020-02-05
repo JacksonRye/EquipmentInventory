@@ -79,6 +79,8 @@ public class ViewDatabaseController implements Initializable {
     private TableColumn<BorrowedEquipment, Integer> inEquipmentQuantityBorrowed;
     @FXML
     private TableColumn<BorrowedEquipment, String> inIssueNo;
+    @FXML
+    private TableColumn inEquipmentQuantityReturned;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -100,13 +102,14 @@ public class ViewDatabaseController implements Initializable {
                 String equipmentId = resultSet.getString("equipmentId");
                 String equipmentName = resultSet.getString("equipmentName");
                 Integer quantityBorrowed = resultSet.getInt("quantityBorrowed");
+                Integer quantityReturned = resultSet.getInt("quantityReturned");
                 String borrowedBy = resultSet.getString("borrowedBy");
                 String timeBorrowed = resultSet.getString("timeBorrowed");
                 String timeReturned = resultSet.getString("timeReturned");
                 String issueId = resultSet.getString("issueNo");
 
                 borrowedEquipmentsList.add(new BorrowedEquipment(equipmentId,
-                        equipmentName, quantityBorrowed, borrowedBy, timeBorrowed, timeReturned, issueId));
+                        equipmentName, quantityBorrowed, quantityReturned, borrowedBy, timeBorrowed, timeReturned, issueId));
 
             }
         } catch (SQLException e) {
@@ -121,6 +124,7 @@ public class ViewDatabaseController implements Initializable {
         inEquipmentId.setCellValueFactory(new PropertyValueFactory<>("id"));
         inEquipmentName.setCellValueFactory(new PropertyValueFactory<>("name"));
         inEquipmentQuantityBorrowed.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        inEquipmentQuantityReturned.setCellValueFactory(new PropertyValueFactory<>("quantityReturned"));
         inBorrowedBy.setCellValueFactory(new PropertyValueFactory<>("borrowedBy"));
         inTimeBorrowed.setCellValueFactory(new PropertyValueFactory<>("timeBorrowed"));
         inTimeReturned.setCellValueFactory(new PropertyValueFactory<>("timeReturned"));

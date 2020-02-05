@@ -13,6 +13,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.sql.PreparedStatement;
@@ -25,9 +26,14 @@ public class IssueDialogController implements Initializable {
     private ObservableList<Staff> staffList = FXCollections.observableArrayList();
     @FXML
     private JFXComboBox staffComboBox;
+    private MainController mainController;
 
     @FXML
     private void handleIssueOperation(ActionEvent event) {
+        if (staffComboBox.getValue() == null) {
+            AlertMaker.showErrorMessage("Error", "No staff selected");
+            return;
+        }
         Long millis = System.currentTimeMillis();
         String now = EquipmentInventoryUtils.formatDateTimeString(millis);
         String issueId = EquipmentInventoryUtils.formatSQLDateTimeString(millis);
@@ -36,17 +42,20 @@ public class IssueDialogController implements Initializable {
             item.getSelectedItem().setTimeBorrowed(now);
         }
         if (DataHelper.insertBorrowedEquipment(MainController.cartItems, (Staff) staffComboBox.getValue())) {
+            mainController.clearCart(new ActionEvent());
             AlertMaker.showSimpleAlert("Success", "Issue inserted successfully");
-            return;
+            ((Stage) staffComboBox.getScene().getWindow()).close();
         }
     }
 
     @FXML
     private void handleCancelOperation(ActionEvent event) {
+        ((Stage) staffComboBox.getScene().getWindow()).close();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         try {
             PreparedStatement preparedStatement = DatabaseHandler.getInstance().getConn().prepareStatement("SELECT * FROM STAFF_TABLE");
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -64,5 +73,9 @@ public class IssueDialogController implements Initializable {
             e.printStackTrace();
         }
         staffComboBox.setItems(staffList);
+    }
+
+    public void setUp(MainController mainController) {
+        this.mainController = mainController;
     }
 }

@@ -3,7 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <StackPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-           minWidth="-Infinity" prefHeight="671.0" prefWidth="1243.0" xmlns="http://javafx.com/javafx/8.0.171"
+           minWidth="-Infinity" prefHeight="709.0" prefWidth="1435.0" stylesheets="@../../../../resources/resources.css"
+           xmlns="http://javafx.com/javafx/8.0.171"
            fx:controller="equipment.inventory.ui.tables.ViewDatabaseController">
     <children>
         <BorderPane prefHeight="200.0" prefWidth="200.0">
@@ -76,7 +77,9 @@
                                        <TableColumn fx:id="inEquipmentId" prefWidth="75.0" text="EQUIPMENT ID"/>
                                        <TableColumn fx:id="inEquipmentName" prefWidth="75.0" text="EQUIPMENT NAME"/>
                                        <TableColumn fx:id="inEquipmentQuantityBorrowed" prefWidth="75.0"
-                                                    text="QUANTITY BORROWED"/>
+                                                    text="QTY BORROWED"/>
+                                       <TableColumn fx:id="inEquipmentQuantityReturned" prefWidth="75.0"
+                                                    text="QTY RETURNED"/>
                                        <TableColumn fx:id="inBorrowedBy" prefWidth="75.0" text="BORROWED BY"/>
                                        <TableColumn fx:id="inTimeBorrowed" prefWidth="75.0" text="TIME BORROWED"/>
                                        <TableColumn fx:id="inTimeReturned" prefWidth="75.0" text="TIME RETURNED"/>

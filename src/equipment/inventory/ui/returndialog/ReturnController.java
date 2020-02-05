@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,6 +25,7 @@ public class ReturnController implements Initializable {
 
     @FXML
     private void handleCancelReturn(ActionEvent event) {
+        ((Stage) vBox.getScene().getWindow()).close();
     }
 
     @Override

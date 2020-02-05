@@ -1,5 +1,6 @@
 package equipment.inventory.model;
 
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class BorrowedEquipment extends Equipment {
@@ -8,13 +9,15 @@ public class BorrowedEquipment extends Equipment {
     private final SimpleStringProperty timeBorrowed;
     private final SimpleStringProperty timeReturned;
     private final SimpleStringProperty issueId;
+    private final SimpleIntegerProperty quantityReturned;
 
     public BorrowedEquipment(String equipmentId, String equipmentName,
-                             Integer quantity,
+                             Integer quantity, Integer quantityReturned,
                              String borrowedBy, String timeBorrowed,
                              String timeReturned, String issueId) {
 
         super(equipmentId, equipmentName, quantity);
+        this.quantityReturned = new SimpleIntegerProperty(quantityReturned);
         this.borrowedBy = new SimpleStringProperty(borrowedBy);
         this.timeBorrowed = new SimpleStringProperty(timeBorrowed);
         this.timeReturned = new SimpleStringProperty(timeReturned);
@@ -27,6 +30,7 @@ public class BorrowedEquipment extends Equipment {
         this.borrowedBy = new SimpleStringProperty();
         this.timeBorrowed = new SimpleStringProperty();
         this.timeReturned = new SimpleStringProperty();
+        this.quantityReturned = new SimpleIntegerProperty();
     }
 
     public BorrowedEquipment(String id, String name, Integer quantity) {
@@ -34,6 +38,7 @@ public class BorrowedEquipment extends Equipment {
         this.issueId = new SimpleStringProperty();
         this.borrowedBy = new SimpleStringProperty();
         this.timeBorrowed = new SimpleStringProperty();
+        this.quantityReturned = new SimpleIntegerProperty();
         this.timeReturned = new SimpleStringProperty();
     }
 

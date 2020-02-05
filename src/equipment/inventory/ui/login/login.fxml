@@ -3,38 +3,35 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-
-
-<AnchorPane prefHeight="220.0" prefWidth="402.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="equipment.inventory.ui.login.LoginController">
-   <children>
-      <VBox layoutX="102.0" layoutY="-2.0" prefHeight="277.0" prefWidth="415.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-2.0">
-         <children>
-            <Label alignment="CENTER" prefHeight="54.0" prefWidth="403.0" text="Inventory" />
-            <JFXTextField fx:id="lblUsername" labelFloat="true" promptText="Username">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-               </VBox.margin>
-            </JFXTextField>
-            <JFXPasswordField fx:id="lblPassword" labelFloat="true" onAction="#handleLogin" promptText="Password">
-               <VBox.margin>
-                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-               </VBox.margin>
-            </JFXPasswordField>
-            <HBox prefHeight="55.0" prefWidth="403.0">
-               <children>
-                  <JFXButton onAction="#handleLogin" prefHeight="100.0" prefWidth="200.0" text="Login" />
-                  <JFXButton onAction="#handleCancel" prefHeight="100.0" prefWidth="200.0" text="Cancel" />
-               </children>
-               <VBox.margin>
-                  <Insets top="20.0" />
-               </VBox.margin>
-            </HBox>
-         </children>
-      </VBox>
-   </children>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="244.0" prefWidth="419.0"
+            stylesheets="@../../../../resources/resources.css" xmlns="http://javafx.com/javafx/8.0.171"
+            fx:controller="equipment.inventory.ui.login.LoginController">
+    <children>
+        <FontAwesomeIconView glyphName="LOCK" layoutX="129.0" layoutY="47.0" size="55" textAlignment="CENTER"
+                             wrappingWidth="145.0" AnchorPane.bottomAnchor="179.0" AnchorPane.leftAnchor="129.0"
+                             AnchorPane.rightAnchor="153.5714282989502" AnchorPane.topAnchor="10.0"/>
+        <JFXTextField fx:id="lblUsername" labelFloat="true" layoutX="86.0" layoutY="67.0" prefHeight="32.0"
+                      prefWidth="293.0" promptText="Username" AnchorPane.bottomAnchor="145.0"
+                      AnchorPane.leftAnchor="86.0" AnchorPane.rightAnchor="48.571428298950195"
+                      AnchorPane.topAnchor="67.0"/>
+        <JFXPasswordField fx:id="lblPassword" labelFloat="true" layoutX="81.0" layoutY="122.0" onAction="#handleLogin"
+                          prefHeight="32.0" prefWidth="293.0" promptText="Password" AnchorPane.bottomAnchor="90.0"
+                          AnchorPane.leftAnchor="81.0" AnchorPane.rightAnchor="53.571428298950195"
+                          AnchorPane.topAnchor="122.0"/>
+        <HBox layoutX="36.0" layoutY="175.0" prefHeight="55.0" prefWidth="360.0" AnchorPane.bottomAnchor="10.0"
+              AnchorPane.leftAnchor="36.0" AnchorPane.rightAnchor="31.571428298950195" AnchorPane.topAnchor="179.0">
+            <children>
+                <JFXButton onAction="#handleLogin" prefHeight="100.0" prefWidth="200.0" text="Login"/>
+                <JFXButton onAction="#handleCancel" prefHeight="100.0" prefWidth="200.0" text="Cancel"/>
+            </children>
+        </HBox>
+        <FontAwesomeIconView glyphName="KEY" layoutX="41.0" layoutY="148.0" size="30"
+                             AnchorPane.bottomAnchor="91.71428489685059" AnchorPane.leftAnchor="41.0"
+                             AnchorPane.rightAnchor="356.5714282989502" AnchorPane.topAnchor="122.28571510314941"/>
+        <FontAwesomeIconView glyphName="USER" layoutX="45.0" layoutY="93.0" size="30"
+                             AnchorPane.bottomAnchor="146.7142848968506" AnchorPane.leftAnchor="45.0"
+                             AnchorPane.rightAnchor="361.1428565979004" AnchorPane.topAnchor="67.28571510314941"/>
+    </children>
 </AnchorPane>

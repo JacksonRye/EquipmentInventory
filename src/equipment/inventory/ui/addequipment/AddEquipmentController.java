@@ -8,7 +8,6 @@ import equipment.inventory.model.Equipment;
 import equipment.inventory.ui.main.MainController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -28,6 +27,7 @@ public class AddEquipmentController implements Initializable {
     private JFXTextField inputName;
     @FXML
     private Spinner spinnerQuantity;
+    private MainController mainController;
 
 
     @FXML
@@ -55,20 +55,13 @@ public class AddEquipmentController implements Initializable {
         boolean result = DataHelper.insertNewEquipment(equipment);
 
         if (result) {
-            try {
-//               TODO: REFESH COMBOBOX AFTER ADD EQUIPMENTS
-
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/equipment/inventory/ui/main/Main.fxml"));
-                loader.load();
-                MainController controller = loader.getController();
-                controller.loadComboBox();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             AlertMaker.showSimpleAlert("Success", "Equipment Added Successfully");
-            clearCache();
+            inputId.clear();
+            inputName.clear();
+            spinnerQuantity.getValueFactory().setValue(1);
+            mainController.loadComboBox();
         } else {
-            AlertMaker.showErrorMessage("Error", "Equipment Addition Failed");
+            AlertMaker.showErrorMessage("Error", "Equipment with Id may already exist");
         }
 
     }
@@ -83,10 +76,6 @@ public class AddEquipmentController implements Initializable {
         }
     }
 
-    void clearCache() {
-        inputId.setText("");
-        inputName.setText("");
-    }
 
     @FXML
     private void handleCancelOperation(ActionEvent event) {
@@ -107,5 +96,9 @@ public class AddEquipmentController implements Initializable {
         inputId.setText(selectedEquipment.getId());
         inputId.setEditable(false);
         inputName.setText(selectedEquipment.getName());
+    }
+
+    public void setUp(MainController mainController) {
+        this.mainController = mainController;
     }
 }

@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Equipment Inventory:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Equipment_Inventory_jar</output-path>
+    <root id="archive" name="Equipment Inventory.jar">
+      <element id="module-output" name="Equipment Inventory" />
+      <element id="extracted-dir" path="$USER_HOME$/java/jfoenix-8.0.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/java/db-derby-10.14.2.0-bin/lib/derby.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/java/db-derby-10.14.2.0-bin/lib/derbyclient.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/java/commons-codec-1.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/java/gson-2.8.6.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -23,7 +23,7 @@ public class DataHelper {
             statement.setInt(3, equipment.getQuantity());
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
-            AlertMaker.showErrorMessage(ex);
+            ex.printStackTrace();
         }
         return false;
     }
@@ -40,12 +40,11 @@ public class DataHelper {
             statement.setString(5, staff.getEmail());
             return statement.executeUpdate() > 0;
         } catch (SQLException ex) {
-            AlertMaker.showErrorMessage(ex);
+            ex.printStackTrace();
         }
         return false;
     }
 
-    //    TODO: POSSIBLE BUG, UPDATES ITEMS TWICE
     public static boolean insertBorrowedEquipment(ObservableList<ItemController> itemList, Staff staff) {
         try {
             DatabaseHandler.getInstance().getConn().setAutoCommit(false);
@@ -110,6 +109,20 @@ public class DataHelper {
         try {
             DatabaseHandler.getInstance().getConn().setAutoCommit(false);
             for (ItemController item : items) {
+                PreparedStatement preparedStatement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                        "SELECT quantityBorrowed FROM BORROWED_TABLE WHERE equipmentId = ? AND issueId = ?"
+                );
+                preparedStatement.setString(1, item.getIdText());
+                preparedStatement.setString(2, issueNo);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    if (resultSet.getInt("quantityBorrowed") < item.getSpinnerQuantity()) {
+                        AlertMaker.showErrorMessage("Error", "You are trying to return more than you borrowed " +
+                                "for " + item.getSelectedItem().getName());
+                        DatabaseHandler.getInstance().getConn().rollback();
+                        return false;
+                    }
+                }
                 PreparedStatement statement = DatabaseHandler.getInstance().getConn().prepareStatement(
                         "UPDATE EQUIPMENT_STOCK SET quantityRemaining = quantityRemaining + ? WHERE equipmentId = ?"
                 );
@@ -125,7 +138,14 @@ public class DataHelper {
 
                     statement.setString(1, now);
                     statement.setString(2, issueNo);
-                    if (statement.executeUpdate() > 0) continue;
+                    if (statement.executeUpdate() > 0) {
+                        statement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                                "UPDATE BORROWED_TABLE SET quantityReturned = ? WHERE equipmentId = ?"
+                        );
+                        statement.setInt(1, item.getSpinnerQuantity());
+                        statement.setString(2, item.getIdText());
+                        if (statement.executeUpdate() > 0) continue;
+                    }
 
                 }
             }

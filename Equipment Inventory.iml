@@ -12,5 +12,7 @@
     <orderEntry type="library" name="commons-codec-1.9" level="project" />
     <orderEntry type="library" name="derby" level="project" />
     <orderEntry type="library" name="derbyclient" level="project" />
+    <orderEntry type="library" name="fontawesomefx-commons-8.15" level="project" />
+    <orderEntry type="library" name="fontawesomefx-fontawesome-4.7.0-5" level="project" />
   </component>
 </module>
