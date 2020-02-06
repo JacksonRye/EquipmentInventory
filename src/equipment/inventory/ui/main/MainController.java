@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import equipment.inventory.alert.AlertMaker;
+import equipment.inventory.database.DataHelper;
 import equipment.inventory.database.DatabaseHandler;
 import equipment.inventory.model.BorrowedEquipment;
 import equipment.inventory.model.Equipment;
@@ -88,6 +89,12 @@ public class MainController implements Initializable {
     @FXML
     private void loadIssueInfo(ActionEvent event) {
         isReadyForReturn = false;
+        returnItems.clear();
+
+        if (DataHelper.isAlreadyReturned(txtFieldReturnEquipmentId.getText())) {
+            textIssueReport.setText("These Issue has already been returned");
+            return;
+        }
 
         if (textIssueReport.getText() != null) {
 
@@ -158,14 +165,13 @@ public class MainController implements Initializable {
 
     }
 
-//    TODO: BUG, ITEMS ADDED TO returnItems multiple times;
 
     @FXML
     private void handleEquipmentReturnOperation(ActionEvent event) {
         ReturnController controller = (ReturnController) EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/returndialog/return.fxml"),
                 "Return Equipments", null);
         controller.setIssueNo(txtFieldReturnEquipmentId.getText());
-        txtFieldReturnEquipmentId.clear();
+//        txtFieldReturnEquipmentId.clear();
     }
 
     @FXML
@@ -177,6 +183,8 @@ public class MainController implements Initializable {
     //    TODO: CREATE SETTINGS PANEL
     @FXML
     private void handleSettingsOperation(ActionEvent event) {
+        EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/settings/settings.fxml"),
+                "Settings", null);
     }
 
     @FXML
@@ -236,5 +244,18 @@ public class MainController implements Initializable {
             e.printStackTrace();
         }
         comboBoxEquipments.setItems(databaseEquipmentList);
+    }
+
+    @FXML
+    private void handleCloseButton(ActionEvent event) {
+        AlertMaker.showSimpleAlert("Coming Soon", "In the future version");
+        return;
+    }
+
+    @FXML
+    private void handleLoadAbout(ActionEvent event) {
+        EquipmentInventoryUtils.loadWindow(getClass().getResource("/equipment/inventory/ui/about/about.fxml"),
+                "About", null);
+        return;
     }
 }

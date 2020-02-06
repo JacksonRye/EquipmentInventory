@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" prefHeight="206.0" prefWidth="404.0" stylesheets="@../../../../resources/resources.css"
+      xmlns="http://javafx.com/javafx/8.0.171" fx:controller="equipment.inventory.ui.settings.SettingsController">
+    <children>
+        <JFXTextField fx:id="username" labelFloat="true" promptText="Username">
+            <VBox.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </VBox.margin>
+        </JFXTextField>
+        <JFXPasswordField fx:id="password" labelFloat="true" promptText="Password">
+            <VBox.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </VBox.margin>
+        </JFXPasswordField>
+        <JFXPasswordField fx:id="confirmPassword" labelFloat="true" layoutX="10.0" layoutY="36.0"
+                          promptText="Confirm Password">
+            <VBox.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </VBox.margin>
+        </JFXPasswordField>
+        <HBox prefHeight="57.0" prefWidth="404.0">
+            <children>
+                <JFXButton onAction="#handleSave" prefHeight="100.0" prefWidth="250.0" text="Save"/>
+                <JFXButton layoutX="10.0" layoutY="10.0" onAction="#handleCancel" prefHeight="100.0" prefWidth="250.0"
+                           text="Cancel"/>
+            </children>
+        </HBox>
+    </children>
+</VBox>

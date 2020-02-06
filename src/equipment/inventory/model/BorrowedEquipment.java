@@ -55,6 +55,17 @@ public class BorrowedEquipment extends Equipment {
         return timeReturned.get();
     }
 
+    public int getQuantityReturned() {
+        return quantityReturned.get();
+    }
+
+    public void setQuantityReturned(int quantityReturned) {
+        this.quantityReturned.set(quantityReturned);
+    }
+
+    public SimpleIntegerProperty quantityReturnedProperty() {
+        return quantityReturned;
+    }
 
     @Override
     public String getId() {

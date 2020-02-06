@@ -15,7 +15,7 @@
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Close"/>
+                                <MenuItem mnemonicParsing="false" onAction="#handleCloseButton" text="Close"/>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Edit">
@@ -25,7 +25,7 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="About"/>
+                                <MenuItem mnemonicParsing="false" onAction="#handleLoadAbout" text="About"/>
                             </items>
                         </Menu>
                     </menus>
@@ -116,8 +116,8 @@
                                                         </JFXTextField>
                                                         <VBox prefHeight="395.0" prefWidth="669.0">
                                                             <children>
-                                                                <JFXTextArea fx:id="textIssueReport" prefHeight="318.0"
-                                                                             prefWidth="669.0"/>
+                                                                <JFXTextArea fx:id="textIssueReport" editable="false"
+                                                                             prefHeight="318.0" prefWidth="669.0"/>
                                                             </children>
                                                         </VBox>
                                                         <AnchorPane prefHeight="53.0" prefWidth="669.0">

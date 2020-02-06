@@ -110,14 +110,14 @@ public class DataHelper {
             DatabaseHandler.getInstance().getConn().setAutoCommit(false);
             for (ItemController item : items) {
                 PreparedStatement preparedStatement = DatabaseHandler.getInstance().getConn().prepareStatement(
-                        "SELECT quantityBorrowed FROM BORROWED_TABLE WHERE equipmentId = ? AND issueId = ?"
+                        "SELECT quantityBorrowed FROM BORROWED_TABLE WHERE equipmentId = ? AND issueNo = ?"
                 );
                 preparedStatement.setString(1, item.getIdText());
                 preparedStatement.setString(2, issueNo);
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()) {
                     if (resultSet.getInt("quantityBorrowed") < item.getSpinnerQuantity()) {
-                        AlertMaker.showErrorMessage("Error", "You are trying to return more than you borrowed " +
+                        AlertMaker.showErrorMessage("Error", "You are trying to return more than you borrowed \n" +
                                 "for " + item.getSelectedItem().getName());
                         DatabaseHandler.getInstance().getConn().rollback();
                         return false;
@@ -148,7 +148,9 @@ public class DataHelper {
                     }
 
                 }
+                item.getSelectedItem().setQuantityReturned(item.getSpinnerQuantity());
             }
+
             AlertMaker.showSimpleAlert("Success", "Items Returned Successfully");
             return true;
 
@@ -234,5 +236,23 @@ public class DataHelper {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    public static boolean isAlreadyReturned(String text) {
+        try {
+            PreparedStatement statement = DatabaseHandler.getInstance().getConn().prepareStatement(
+                    "SELECT timeReturned FROM BORROWED_TABLE WHERE issueNo = ?"
+            );
+            statement.setString(1, text);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String timeReturned = resultSet.getString("timeReturned");
+                if (timeReturned == null) return false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+
     }
 }
