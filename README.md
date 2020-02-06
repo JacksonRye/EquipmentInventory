@@ -4,4 +4,4 @@ Equipment Inventory for Clean Nigeria Associates Limited designed with JavaFX
 ![Add Staff](https://github.com/JacksonRye/EquipmentInventory/blob/master/equipment%20inventory%20images/add_staff.png)
 ![issue](https://github.com/JacksonRye/EquipmentInventory/blob/master/equipment%20inventory%20images/issue.png)
 ![login](https://github.com/JacksonRye/EquipmentInventory/blob/master/equipment%20inventory%20images/login.png)
-  ![table](https://github.com/JacksonRye/EquipmentInventory/blob/master/equipment%20inventory%20images/table.png)
+  ![table](https://github.com/JacksonRye/EquipmentInventory/blob/master/equipment%20inventory%20images/table1.png)
