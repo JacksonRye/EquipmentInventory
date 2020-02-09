@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
@@ -37,19 +38,30 @@ public class ItemController extends HBox implements Initializable {
     public ItemController(BorrowedEquipment equipment, MainController mainController) {
         this.equipment = equipment;
         this.mainController = mainController;
+        spinnerQuantity.setEditable(true);
         for (Object control : controlList) {
             HBox.setMargin((Node) control, new Insets(10, 10, 10, 10));
         }
         id.setText(equipment.getId());
         name.setText(equipment.getName());
-        spinnerQuantity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10000, 1));
+
         cancelBtn.setOnAction((e) -> removeItem(ItemController.this));
         this.getChildren().addAll(controlList);
+
+        SpinnerValueFactory<Integer> factory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20000, 1);
+        spinnerQuantity.setValueFactory(factory);
+
+        TextFormatter formatter = new TextFormatter(factory.getConverter(), factory.getValue());
+        spinnerQuantity.getEditor().setTextFormatter(formatter);
+        factory.valueProperty().bindBidirectional(formatter.valueProperty());
+
     }
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
     }
 
     private void removeItem(ItemController itemController) {
@@ -65,6 +77,11 @@ public class ItemController extends HBox implements Initializable {
     }
 
     public Integer getSpinnerQuantity() {
-        return (Integer) spinnerQuantity.getValue();
+        return Integer.parseInt(spinnerQuantity.getEditor().getText());
     }
+
+    public void setSpinnerQuantity(Integer value) {
+        spinnerQuantity.getValueFactory().setValue(value);
+    }
+
 }

@@ -11,7 +11,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -29,13 +31,26 @@ public class AddEquipmentController implements Initializable {
     private Spinner spinnerQuantity;
     private MainController mainController;
 
+    private <T> void commitEditorText(Spinner<T> spinner) {
+        if (!spinner.isEditable()) return;
+        String text = spinner.getEditor().getText();
+        SpinnerValueFactory<T> valueFactory = spinner.getValueFactory();
+        if (valueFactory != null) {
+            StringConverter<T> converter = valueFactory.getConverter();
+            if (converter != null) {
+                T value = converter.fromString(text);
+                valueFactory.setValue(value);
+            }
+        }
+    }
+
 
     @FXML
     private void handleSaveOperation(ActionEvent event) {
 
         String mId = inputId.getText();
         String mName = inputName.getText();
-        Integer mQuantity = (Integer) spinnerQuantity.getValue();
+        Integer mQuantity = (Integer) spinnerQuantity.getValueFactory().getValue();
 
         Boolean flag = mName.isEmpty() || mId.isEmpty();
 
@@ -89,6 +104,11 @@ public class AddEquipmentController implements Initializable {
         SpinnerValueFactory<Integer> quantityValuesFactory =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 20000, 1);
         spinnerQuantity.setValueFactory(quantityValuesFactory);
+        spinnerQuantity.setEditable(true);
+
+        TextFormatter formatter = new TextFormatter(quantityValuesFactory.getConverter(), quantityValuesFactory.getValue());
+        spinnerQuantity.getEditor().setTextFormatter(formatter);
+        quantityValuesFactory.valueProperty().bindBidirectional(formatter.valueProperty());
     }
 
     public void inflateUI(Equipment selectedEquipment) {
